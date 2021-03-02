@@ -29,6 +29,8 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
   - Big boys talk about communication https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/amstrad-cpc-expansion-port-raiser-with-multiple-edge-connectors-any-interest/25
     - Reported problems with interrupts, ie., if using ESP8266 an interrupt can arrive from Wifi and loose IOREQ
 
+  - https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/albireo-usbsdserial-interface-for-cpc/475/
+
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
   -  Maybe we can ger sth from here
 
