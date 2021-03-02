@@ -7,9 +7,13 @@
   - http://magic-cookie.co.uk/CPC/expport.html
   - How the hardware responds to I/O commands
     - When you issue an IN/INP or OUT command (from BASIC or machine code), the following things happen:
+    
     The IORQ (IO ReQuest) line goes low. This distinguishes it from an attempt to access RAM, for which the MREQ line would go low.
+    
     WR goes low if it's a write request, RD goes low if it's a read request.
+    
     The value of the BC register gets put on the address bus.
+    
     For an OUT command, the value of the appropriate register gets put on the data bus.
 
 So, to give an example, if you made a device that would ignore all IN or OUT commands except those to address &F8F0, you could send a byte to it by doing something like OUT &F8F0, &FF (or the machine code equivalent). The IORQ and WR lines would go low, the value &F8F0 would be put on the address bus, and the value &FF would be put on the data bus. The address decoding logic on your expansion device would recognise that this I/O operation was directed at it, and the device would then do whatever it was supposed to with the data on the data bus.
