@@ -38,6 +38,8 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
     - Schematics http://pulkomandy.tk/drop/albireo/Albireo1.0.pdf
     - kicad http://pulkomandy.tk/projects/avrstuff/browser/CPC%20stuff/ch376
 
+- http://retrowiki.es/viewtopic.php?f=83&t=200032578&p=200076563&hilit=IOREQ#p200076563
+
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
   -  Maybe we can ger sth from here
 
