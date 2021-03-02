@@ -26,7 +26,11 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
   
 - Expansion card with arduino https://hackaday.io/project/169565-arduino-io-card-for-amstrad-cpc-6128  
   - Uses port for reading values.
-  - Circuit
+  - Circuit with 4002, using BRST, RDY, A10, A5, IOREQ, M1, RD, A0, D0..D7
+  - taken from usifac https://www.dropbox.com/s/sxj0objy1xctg0l/schematic.jpg?dl=0
+  - https://hackaday.io/project/169565-arduino-io-card-for-amstrad-cpc-6128/log/173161-members-of-the-board
+  - The logic of the NOR gates is if any of the inputs are HIGH the output is LOW, so if the output of the gate with the M1 connected is opposite of the M1 line so this is low when M1 is high and if the A10, A5,and IOREQ are low this is the only time the output of the second gate is high. The A5 and A10 lines are used to address the card, the address 0xFBD is used for this card because this address has been alocated of serial, check out this IO Allocation page, bit 10 chooses the expansion port and bit 5 chooses the serial. So simply I can use this as an interrupt for the micro to trigger a read of the data lines, I dont need to worry about the rest of the circuit for now.
+  - https://www.dropbox.com/s/sxj0objy1xctg0l/schematic.jpg
   
 - Misc Documentation
   - The ins and outs of Amstrad CPC https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
@@ -39,6 +43,12 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
     - kicad http://pulkomandy.tk/projects/avrstuff/browser/CPC%20stuff/ch376
 
 - http://retrowiki.es/viewtopic.php?f=83&t=200032578&p=200076563&hilit=IOREQ#p200076563
+  - Yo creo que el circuito tiene una parte ya de por si bastante multisistema y otra más dependiente del ordenador al que se conecte. Al chip wifi si que le da igual lo que tenga detrás, ese no tiene problemas. Y el manejo del 16C550 se hace accediendo a sus registros internos por medio de tres líneas (usualmente conectadas a A2, A1 y A0) y otras dos mas para lectura y escritura, que eso lo vamos a encontrar en cualquier micro.
+
+- http://retrowiki.es/viewtopic.php?f=83&t=200034022&p=200095693&hilit=ioreq#p200095693
+ - use of /WAIT
+
+Y por otro lado está la activación del chip, que ya depende de la arquitectura de cada sistema y de los puertos que podamos usar sin entrar en conflicto con nada más. El chip proporciona tres entradas CS0, CS1 y /CS2 con las que podemos jugar, pero imagino que habrá micros donde sea necesaria añadir mas lógica para poder direccionar el chip sin problemas. En el caso del CPC era realmente sencillo porque la propia decodificación parcial que hace ya te lo dejaba muy claro en su momento: A10=0 significa que accedemos a dispositivos externos, y en ese caso A5=0 para los puertos serie. Añadiendo /IORQ a la ecuación ya sabemos exactamente cuando se está accediendo al chip. Ese addon podría ser justo la lógica necesaria para CS0, CS1 y /CS2, que en el caso del CPC es simplemente un 74LS04.
 
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
   -  Maybe we can ger sth from here
