@@ -1,6 +1,7 @@
 # Communication with an Amstrad CPC (mainly from a microcontroller, ESP8266???)
 
 ![imagen](https://user-images.githubusercontent.com/7136948/109623183-28a42680-7b3d-11eb-9a4c-ee2bc75d718d.png)
+
 (Got it from http://www.cpcwiki.eu/index.php/Connector:Expansion_port)
 
 - REQUIREMENT #0: To understand the way they exchange bytes through expansion port.
@@ -21,15 +22,21 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
     - And the two BASIC commands INP() for receive and OUT for send.
    
 - CPC Printer Emulator converts from parallel (printer port) to serial https://github.com/dasta400/ACPCPE
-  - take it as reference
+  - uses Teensy, reads all bits at a time
   
-- Documentation
+- Expansion card with arduino https://hackaday.io/project/169565-arduino-io-card-for-amstrad-cpc-6128  
+  - Uses port for reading values.
+  - Circuit
+  
+- Misc Documentation
   - The ins and outs of Amstrad CPC https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
   - CPC Firmware Guide https://acpc.me/ACME/DOCS_TECHNIQUES/The_AMSTRAD_CPC_Firmware_Guide(Bob_TAYLOR_Thomas_DEFOE_1994)(ENG).pdf
   - Big boys talk about communication https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/amstrad-cpc-expansion-port-raiser-with-multiple-edge-connectors-any-interest/25
     - Reported problems with interrupts, ie., if using ESP8266 an interrupt can arrive from Wifi and loose IOREQ
 
   - https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/albireo-usbsdserial-interface-for-cpc/475/
+    - Schematics http://pulkomandy.tk/drop/albireo/Albireo1.0.pdf
+    - kicad http://pulkomandy.tk/projects/avrstuff/browser/CPC%20stuff/ch376
 
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
   -  Maybe we can ger sth from here
