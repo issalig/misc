@@ -55,6 +55,8 @@ Y por otro lado está la activación del chip, que ya depende de la arquitectura
 
 - Arduino-CPC https://gist.github.com/nicf82/18eced4ebf9648cb47963bdf6f21a345#file-address_decoder-png
 
+- https://z80journal.wordpress.com/2015/10/07/z80-io-space/
+
 ```
 Signaling part (left part)
 ```
