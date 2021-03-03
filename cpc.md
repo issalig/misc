@@ -53,6 +53,9 @@ Y por otro lado está la activación del chip, que ya depende de la arquitectura
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
   -  Maybe we can ger sth from here
 
+- Another Commodore Wifi
+  - https://github.com/svenpetersen1965/C64-WiFi-Modem-User-Port
+
 - Arduino-CPC https://gist.github.com/nicf82/18eced4ebf9648cb47963bdf6f21a345#file-address_decoder-png
 
 - https://z80journal.wordpress.com/2015/10/07/z80-io-space/
