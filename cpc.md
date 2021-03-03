@@ -32,10 +32,10 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
   - The logic of the NOR gates is if any of the inputs are HIGH the output is LOW, so if the output of the gate with the M1 connected is opposite of the M1 line so this is low when M1 is high and if the A10, A5,and IOREQ are low this is the only time the output of the second gate is high. The A5 and A10 lines are used to address the card, the address 0xFBD is used for this card because this address has been alocated of serial, check out this IO Allocation page, bit 10 chooses the expansion port and bit 5 chooses the serial. So simply I can use this as an interrupt for the micro to trigger a read of the data lines, I dont need to worry about the rest of the circuit for now.
   - https://www.dropbox.com/s/sxj0objy1xctg0l/schematic.jpg
   
-- Misc Documentation
-  - The ins and outs of Amstrad CPC https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
-  - CPC Firmware Guide https://acpc.me/ACME/DOCS_TECHNIQUES/The_AMSTRAD_CPC_Firmware_Guide(Bob_TAYLOR_Thomas_DEFOE_1994)(ENG).pdf
-  - Big boys talk about communication https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/amstrad-cpc-expansion-port-raiser-with-multiple-edge-connectors-any-interest/25
+- Timing is critical (info about cycles)
+  - https://github.com/pulkomandy/avrstuff/blob/b20ff7757851ed2bb5a69448d8574e24df88d0b7/CPC%20stuff/cpc_serial_2313/code/main.asm
+  
+ - Big boys talk about communication https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/amstrad-cpc-expansion-port-raiser-with-multiple-edge-connectors-any-interest/25
     - Reported problems with interrupts, ie., if using ESP8266 an interrupt can arrive from Wifi and loose IOREQ
 
   - https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/albireo-usbsdserial-interface-for-cpc/475/
@@ -60,6 +60,10 @@ Y por otro lado está la activación del chip, que ya depende de la arquitectura
 
 - https://z80journal.wordpress.com/2015/10/07/z80-io-space/
 
+
+- Misc Documentation
+  - The ins and outs of Amstrad CPC https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
+  - CPC Firmware Guide https://acpc.me/ACME/DOCS_TECHNIQUES/The_AMSTRAD_CPC_Firmware_Guide(Bob_TAYLOR_Thomas_DEFOE_1994)(ENG).pdf
 
 Signaling part (left part)
 ```
