@@ -57,7 +57,7 @@ Y por otro lado está la activación del chip, que ya depende de la arquitectura
 
 - https://z80journal.wordpress.com/2015/10/07/z80-io-space/
 
-```
+
 Signaling part (left part)
 ```
 49 GND  47 LPEN 45 RAMDIS 43 ROMDIS 41 *RSET  39 READY 37 *BUSRQ 35 *INT 33 *WR   31 *IORQ 29 *M1   27 VCC  
