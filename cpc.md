@@ -67,6 +67,7 @@ Y por otro lado está la activación del chip, que ya depende de la arquitectura
 - Misc Documentation
   - The ins and outs of Amstrad CPC https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
   - CPC Firmware Guide https://acpc.me/ACME/DOCS_TECHNIQUES/The_AMSTRAD_CPC_Firmware_Guide(Bob_TAYLOR_Thomas_DEFOE_1994)(ENG).pdf
+  - Z80 user Manual https://zany80.github.io/documentation/Z80/UserManual.html
 
 Signaling part (left part)
 ```
