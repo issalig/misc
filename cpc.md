@@ -42,6 +42,9 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
     - Schematics http://pulkomandy.tk/drop/albireo/Albireo1.0.pdf
     - kicad http://pulkomandy.tk/projects/avrstuff/browser/CPC%20stuff/ch376
 
+- https://github.com/revaldinho/cpc_ram_expansion
+  -  Good source for RAM ROM expansions
+
 - http://retrowiki.es/viewtopic.php?f=83&t=200032578&p=200076563&hilit=IOREQ#p200076563
   - Yo creo que el circuito tiene una parte ya de por si bastante multisistema y otra más dependiente del ordenador al que se conecte. Al chip wifi si que le da igual lo que tenga detrás, ese no tiene problemas. Y el manejo del 16C550 se hace accediendo a sus registros internos por medio de tres líneas (usualmente conectadas a A2, A1 y A0) y otras dos mas para lectura y escritura, que eso lo vamos a encontrar en cualquier micro.
 
