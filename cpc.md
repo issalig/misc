@@ -53,6 +53,31 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 
 Y por otro lado está la activación del chip, que ya depende de la arquitectura de cada sistema y de los puertos que podamos usar sin entrar en conflicto con nada más. El chip proporciona tres entradas CS0, CS1 y /CS2 con las que podemos jugar, pero imagino que habrá micros donde sea necesaria añadir mas lógica para poder direccionar el chip sin problemas. En el caso del CPC era realmente sencillo porque la propia decodificación parcial que hace ya te lo dejaba muy claro en su momento: A10=0 significa que accedemos a dispositivos externos, y en ese caso A5=0 para los puertos serie. Añadiendo /IORQ a la ecuación ya sabemos exactamente cuando se está accediendo al chip. Ese addon podría ser justo la lógica necesaria para CS0, CS1 y /CS2, que en el caso del CPC es simplemente un 74LS04.
 
+
+- http://retrowiki.es/viewtopic.php?f=83&t=200034022&p=200095697&hilit=pic18f#p200095697
+  - No vas a poder hablar directamente entre un arduino y un Z80. Simplemente el arduino no es tan rápido como para responder a las señales de MREQ o IOREQ del Z80 (a no ser que el z80 vaya a pedales).
+  - Me ha despistado un poco eso que dices de acceder a la SD por puerto serie. La forma normal es hacerlo por SPI. 
+Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el arduino y el Z80, tipo registro de entrada salida, que sea rápido para poder hablar con el Z80 y lento, a la vez, para hablar con el arduino. Vamos que necesitas una CPLD o similar si no quieres llenar todo de cucarachas.
+
+  - Mi propuesta es usar un Pic18f con PSP (parallel slave port) como puente. Cuando lo usas, el Pic aparece ante el Z80 como un periférico normal, con sus patillas /CS, /WR y /RD, pero con la ventaja de que se puede programar para descargar de trabajo al Z80
+
+  - Hay formas de comunicar un microcontrolador lento con un Z80, pero son bastante feas, aunque hay un truco si te puedes permitir usar el WAIT, generándolo mediante lógica discreta.
+
+  - El funcionamiento del PSP es que cuando se reciben las señales /CS y /WR (o /RD), el PIC coge el contenido del puerto, te lo mete en un buffer y genera una interrupción. De este modo tenemos una comunicación bastante rápida, sobre todo si coges un microcontrolador que tenga PLL interno para multiplicar x 4 la frecuencia de reloj, y le dejas el trabajo duro al microcontrolador para no saturar el Z80.
+
+  - 1) WAIT usage is limited in some computers like the ZX Spectrum, because it uses the RFRSH signal from the Z80 to keep the RAM contents. A long Wait will cause memory corruption.
+  - 2) Teensy must ensure to go Hi-Z before any other computer part uses the bus when (RD from Z80). In (WR) there is no problem. This is tricky.
+        - a) Recognize RD request from Z80 and Issue a WAIT really fast (usually you will need external discrete hw for this, a uC is not fast enough)
+        - b) Do whatever you need in the teensy and put data on the bus
+        - c) Release WAIT and, this is the tricky part: keep the data long enough for the Z80 to read it but not so long that it will collide with the next read cycle from the z80.
+
+
+Using a PSP equipped uController as solderboy suggested will save you the trouble ;).
+
+- Program pickit
+  - http://retrowiki.es/viewtopic.php?f=22&t=200036629&p=200133069&hilit=pic#p200133069
+
+
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
   -  Maybe we can ger sth from here
 
