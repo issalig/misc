@@ -76,6 +76,7 @@ Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el a
 
 - Program pickit
   - http://retrowiki.es/viewtopic.php?f=22&t=200036629&p=200133069&hilit=pic#p200133069
+  - http://retrowiki.es/viewtopic.php?f=22&t=200036629&p=200133069&hilit=pic#p200132957
 
 
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
