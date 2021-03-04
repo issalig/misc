@@ -51,7 +51,7 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 - http://retrowiki.es/viewtopic.php?f=83&t=200034022&p=200095693&hilit=ioreq#p200095693
  - use of /WAIT
 
-Y por otro lado está la activación del chip, que ya depende de la arquitectura de cada sistema y de los puertos que podamos usar sin entrar en conflicto con nada más. El chip proporciona tres entradas CS0, CS1 y /CS2 con las que podemos jugar, pero imagino que habrá micros donde sea necesaria añadir mas lógica para poder direccionar el chip sin problemas. En el caso del CPC era realmente sencillo porque la propia decodificación parcial que hace ya te lo dejaba muy claro en su momento: A10=0 significa que accedemos a dispositivos externos, y en ese caso A5=0 para los puertos serie. Añadiendo /IORQ a la ecuación ya sabemos exactamente cuando se está accediendo al chip. Ese addon podría ser justo la lógica necesaria para CS0, CS1 y /CS2, que en el caso del CPC es simplemente un 74LS04.
+ - Y por otro lado está la activación del chip, que ya depende de la arquitectura de cada sistema y de los puertos que podamos usar sin entrar en conflicto con nada más. El chip proporciona tres entradas CS0, CS1 y /CS2 con las que podemos jugar, pero imagino que habrá micros donde sea necesaria añadir mas lógica para poder direccionar el chip sin problemas. En el caso del CPC era realmente sencillo porque la propia decodificación parcial que hace ya te lo dejaba muy claro en su momento: A10=0 significa que accedemos a dispositivos externos, y en ese caso A5=0 para los puertos serie. Añadiendo /IORQ a la ecuación ya sabemos exactamente cuando se está accediendo al chip. Ese addon podría ser justo la lógica necesaria para CS0, CS1 y /CS2, que en el caso del CPC es simplemente un 74LS04.
 
 
 - http://retrowiki.es/viewtopic.php?f=83&t=200034022&p=200095697&hilit=pic18f#p200095697
@@ -72,7 +72,7 @@ Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el a
         - c) Release WAIT and, this is the tricky part: keep the data long enough for the Z80 to read it but not so long that it will collide with the next read cycle from the z80.
 
 
-Using a PSP equipped uController as solderboy suggested will save you the trouble ;).
+  - Using a PSP equipped uController as solderboy suggested will save you the trouble ;).
 
 - Program pickit
   - http://retrowiki.es/viewtopic.php?f=22&t=200036629&p=200133069&hilit=pic#p200133069
