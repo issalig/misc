@@ -90,6 +90,8 @@ Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el a
 - Another Commodore Wifi
   - https://github.com/svenpetersen1965/C64-WiFi-Modem-User-Port
 
+  - https://www.tindie.com/products/syzygy_systems/commodore-64-wifi-modem-syzygy-europa/
+
 - Arduino-CPC https://gist.github.com/nicf82/18eced4ebf9648cb47963bdf6f21a345#file-address_decoder-png
 
 - https://z80journal.wordpress.com/2015/10/07/z80-io-space/
