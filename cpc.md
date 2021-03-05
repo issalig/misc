@@ -85,12 +85,13 @@ Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el a
 
 
 - Commodore Wifi adapter http://retropcb.com/2018/10/31/commodore-64-9600-baud-wifi-adapter/
-  -  Maybe we can ger sth from here
+  -  Maybe we can get sth from here. Hmmm probably not cause Commodore has serial lines
 
 - Another Commodore Wifi
   - https://github.com/svenpetersen1965/C64-WiFi-Modem-User-Port
 
   - https://www.tindie.com/products/syzygy_systems/commodore-64-wifi-modem-syzygy-europa/
+  - https://github.com/RolandJuno/esp8266_modem
 
 - Arduino-CPC https://gist.github.com/nicf82/18eced4ebf9648cb47963bdf6f21a345#file-address_decoder-png
 
