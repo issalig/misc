@@ -120,3 +120,17 @@ Data part (right part)
 - /WR (Write; Output from CPU). When /WR="0" the CPU is performing a write operation. The operations are:
     - Writing to a I/O device: (/IORQ="0", A15-A0 contain I/O address)
     - Writing to memory (/MREQ="0", A15-A0 contain memory address)
+
+
+
+- Machine code
+  -  Z80 processor has 14 registers
+    - 6 for general use (B, C, D, E, H, L)
+    - 1 for accumulator (A)
+    - 1 for program counter (PC)
+    - 1 for stack pointer (SP)
+    - 1 for status (F)
+    - 1 for interruption I
+    - 1 for memory regeneration (R)
+    - 2 for index registers (IX, IY)
+    - 
