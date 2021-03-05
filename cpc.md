@@ -74,6 +74,11 @@ Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el a
 
   - Using a PSP equipped uController as solderboy suggested will save you the trouble ;).
 
+- Timings are important
+  - https://github.com/revaldinho/cpc-cplink/blob/master/src/cpld_fifo.v
+  - https://zany80.github.io/documentation/Z80/UserManual.html#[24,%22XYZ%22,72,368,null]
+  - 
+
 - Program pickit
   - http://retrowiki.es/viewtopic.php?f=22&t=200036629&p=200133069&hilit=pic#p200133069
   - http://retrowiki.es/viewtopic.php?f=22&t=200036629&p=200133069&hilit=pic#p200132957
