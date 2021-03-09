@@ -4,6 +4,8 @@
 
 (Got it from http://www.cpcwiki.eu/index.php/Connector:Expansion_port)
 
+- GOAL: Switch on and off a LED. The microcontroller reads signaling IORQ, M1 and A5-A7, then switches ON/OFF the led according to D0
+
 - REQUIREMENT #0: To understand the way they exchange bytes through expansion port.
   - http://magic-cookie.co.uk/CPC/expport.html
   - How the hardware responds to I/O commands
