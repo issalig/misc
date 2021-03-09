@@ -15,7 +15,12 @@
 
 So, to give an example, if you made a device that would ignore all IN or OUT commands except those to address &F8F0, you could send a byte to it by doing something like OUT &F8F0, &FF (or the machine code equivalent). The IORQ and WR lines would go low, the value &F8F0 would be put on the address bus, and the value &FF would be put on the data bus. The address decoding logic on your expansion device would recognise that this I/O operation was directed at it, and the device would then do whatever it was supposed to with the data on the data bus.
 
-- USIFAC2 is similar but sources are closed.
+- https://z80journal.wordpress.com/2015/10/07/z80-io-space/
+  - IORQ and M1 to differentiate it from INTACK cycle
+  - INTACK http://www.z80.info/1653.htm
+
+
+- USIFAC2 is similar but sources are closed :(
   - Communication with the device is accomplished using only two ports: 
     - &FBD1: The control port 
     - &FBD0: The data port
