@@ -31,6 +31,12 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 - CPC Printer Emulator converts from parallel (printer port) to serial https://github.com/dasta400/ACPCPE
   - uses Teensy, reads all bits at a time
   
+- https://baltazarstudios.com/arduino-zilog-z80/  
+  - Z80 bus monitor with ATMEGA
+
+- https://zxinterfacez.blogspot.com/2020/10/zx-interface-z-hardware-part-1.html
+  - schematics
+  
 - Expansion card with arduino https://hackaday.io/project/169565-arduino-io-card-for-amstrad-cpc-6128  
   - Uses port for reading values.
   - Circuit with 4002, using BRST, RDY, A10, A5, IOREQ, M1, RD, A0, D0..D7
