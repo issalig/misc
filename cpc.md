@@ -36,6 +36,9 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 
 - https://zxinterfacez.blogspot.com/2020/10/zx-interface-z-hardware-part-1.html
   - schematics
+
+- Busrider Z80 monitor
+ - https://usermanual.wiki/Document/BusRaider201720Manual.269933587/help
   
 - Expansion card with arduino https://hackaday.io/project/169565-arduino-io-card-for-amstrad-cpc-6128  
   - Uses port for reading values.
