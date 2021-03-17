@@ -27,6 +27,7 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
     - &FBD1: The control port 
     - &FBD0: The data port
     - And the two BASIC commands INP() for receive and OUT for send.
+    - http://www.cpcwiki.eu/index.php/Programming:Read/Write_a_file_quickly_byte-by-byte
    
 - CPC Printer Emulator converts from parallel (printer port) to serial https://github.com/dasta400/ACPCPE
   - uses Teensy, reads all bits at a time
