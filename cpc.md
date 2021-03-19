@@ -122,6 +122,8 @@ Lo que creo que necesitas aquí es algún tipo de interfaz intermedio entre el a
   - The ins and outs of Amstrad CPC https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
   - CPC Firmware Guide https://acpc.me/ACME/DOCS_TECHNIQUES/The_AMSTRAD_CPC_Firmware_Guide(Bob_TAYLOR_Thomas_DEFOE_1994)(ENG).pdf
   - Z80 user Manual https://zany80.github.io/documentation/Z80/UserManual.html
+  - https://www.amstradcpc.es/lib/exe/fetch.php?media=publicaciones:libros:biblioteca:amstrad_cpc464_664_6128_manual_de_referencia_avanzado_rafael_sarmiento_ocr.pdf
+  - https://www.amstrad.es/lib/exe/fetch.php?media=publicaciones:libros:biblioteca:programacion_avanzada_del_amstrad.pdf
 
 Signaling part (left part)
 ```
