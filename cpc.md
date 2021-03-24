@@ -38,6 +38,13 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 - https://zxinterfacez.blogspot.com/2020/10/zx-interface-z-hardware-part-1.html
   - schematics
 
+- arduino code to control z80
+  - https://bl.ocks.org/postfalk/4d75cd69892acbefdb0b   (also rom expander)
+  - https://create.arduino.cc/projecthub/michalin70/retro-computing-with-arduino-mega-and-a-z80-processor-86c79c
+  - http://labs.domipheus.com/blog/teensy-z80-part-1-intro-memory-serial-io-and-display/
+  - http://labs.domipheus.com/blog/teensy-z80-part-2-mode-2-interrupts-timer/
+  - https://github.com/blackjetrock/z80_shield
+
 - Busrider Z80 monitor
  - https://usermanual.wiki/Document/BusRaider201720Manual.269933587/help
   
