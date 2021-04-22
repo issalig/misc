@@ -20,6 +20,8 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 - https://www.va-de-retro.com/foros/viewtopic.php?t=3840
   - SERIAL CARD!!!!!!!!!!!!!!!!!!!! CHECK IT
 
+- Arduino PORTS http://electronoobs.com/eng_arduino_tut130.php
+
 - https://z80journal.wordpress.com/2015/10/07/z80-io-space/
   - IORQ and M1 to differentiate it from INTACK cycle
   - INTACK http://www.z80.info/1653.htm
