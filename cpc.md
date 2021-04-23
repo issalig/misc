@@ -20,6 +20,9 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
 - https://www.va-de-retro.com/foros/viewtopic.php?t=3840
   - SERIAL CARD!!!!!!!!!!!!!!!!!!!! CHECK IT
 
+- Execute BIN from serial
+  - http://retrowiki.es/viewtopic.php?f=83&t=200032578&p=200077028&hilit=M1+IORQ+CPC#p200077028
+
 - Arduino PORTS http://electronoobs.com/eng_arduino_tut130.php
 
 - https://z80journal.wordpress.com/2015/10/07/z80-io-space/
