@@ -17,6 +17,15 @@
 
 So, to give an example, if you made a device that would ignore all IN or OUT commands except those to address &F8F0, you could send a byte to it by doing something like OUT &F8F0, &FF (or the machine code equivalent). The IORQ and WR lines would go low, the value &F8F0 would be put on the address bus, and the value &FF would be put on the data bus. The address decoding logic on your expansion device would recognise that this I/O operation was directed at it, and the device would then do whatever it was supposed to with the data on the data bus.
 
+ - Design an Upper ROM
+ - http://retrowiki.es/viewtopic.php?f=8&t=200030156&p=200045303&hilit=M1+IORQ+CPC&sid=7a798f96850c0834acf376ad969c6418#p200045303
+
+ - Search M! IORW
+   - http://retrowiki.es/search.php?keywords=M1+IORQ+CPC
+
+ - Load games fom .sna with Minibooster 
+   - http://fremos.cheesetea.com/2015/08/22/bluetooth-en-amstrad-cpc_cargando-juego-desde-pc/
+
 - https://www.va-de-retro.com/foros/viewtopic.php?t=3840
   - SERIAL CARD!!!!!!!!!!!!!!!!!!!! CHECK IT
 
