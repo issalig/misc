@@ -41,6 +41,13 @@ Apparently &BB0C only works for the equivalent of INKEY$. It doesn't work for e.
 My code presses all 1-32 keys at the same time.
 And it's keys, not characters.
 
+- Basics
+ - https://cpctech.cpcwiki.de/docs/iodevice.html
+   - When a I/O read or write operation is performed, A15-A0 contain the I/O address specified by the I/O instruction being executed by the CPU, /IORQ will be "0" and /M1 will be "1". 
+ - Expansion roms, RSX, ...
+ - https://cpctech.cpcwiki.de/docs/manual/s158se09.pdf
+
+
 - Accessing video memory
  - http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
  - Controlling gate array
@@ -58,3 +65,4 @@ And it's keys, not characters.
 
   - AY and PPI
     - https://cpctech.cpc-live.com/docs/psgnotes.htm
+    - http://www.cpcwiki.eu/index.php/8255
