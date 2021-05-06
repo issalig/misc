@@ -1,0 +1,60 @@
+Q:Hi, my knowledge of Z80 and CPC firmware is quite limited but I know here there are experienced people.
+I have been thinking about a KVM switch for the CPC so you can send keystrokes and receive screen. i would use a microcontroller connected to the expansion port.
+For the screen I think it could be done by intercepting the writings to video memory from  C000 to FFFF.
+For the keys, I am not totally sure how to "emulate" a key press, it looks like AY-3-8912 and 8255 are involved in the process.
+
+A:Specifically for the CPC you can POKE in certain addresses and it will emulate key presses.
+I haven't tried this while playing a game though, just in BASIC
+Also, C000-FFFF is not always the video memory address, just the default
+
+Hm... I've used &B63E in the past, but I'm not sure why or how
+Here's my assembly code from back in the day:
+
+KEYPRES:      EQU  0xB63E
+
+RKEY:         RET  Z              ;Any num of par
+              PUSH AF
+              LD   A,(IX+0)
+              INC  IX
+              INC  IX
+              CALL RKEY_M
+              POP  AF
+              DEC  A
+              JR   RKEY
+RKEY_M:       LD   HL,KEYPRES
+RKEY_1:       SUB  8
+              INC  HL
+              JR   NC,RKEY_1
+              ADD  A,8
+              LD   B,A
+              LD   A,1
+RKEY_R:       RLCA
+              DJNZ RKEY_R
+              CPL
+              AND  (HL)
+              LD   (HL),A
+              RET
+
+This is part of an RSX command  |RKEY which took n key parameters (1-32 IIRC), each of which was a keypress
+I'm guessing using the actual firmware command is probably better.
+Apparently &BB0C only works for the equivalent of INKEY$. It doesn't work for e.g. cursor keys (or joysticks) etc.
+My code presses all 1-32 keys at the same time.
+And it's keys, not characters.
+
+Accessing video memory
+http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
+-Controlling gate array
+https://cpctech.cpc-live.com/docs/garray.html
+
+
+Scanning keyboard
+Insert key on queue
+http://www.cpcwiki.eu/forum/programming/insert-key-in-keyboard-event-queue/
+
+http://www.cpcwiki.eu/forum/programming/load-using-firmware-loader-with-messages-without-'press-play-then-any-key'
+
+https://cpctech.cpc-live.com/docs/keyboard.html
+http://www.cpcwiki.eu/index.php/8255
+https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/is-there-any-recent-project-to-connect-a-pc-(ps2)-keyboard-to-the-cpc/
+http://www.cpcwiki.eu/forum/technical-support/amstrad-cpc-4646128664-external-keyboard/
+
