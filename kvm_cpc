@@ -41,20 +41,20 @@ Apparently &BB0C only works for the equivalent of INKEY$. It doesn't work for e.
 My code presses all 1-32 keys at the same time.
 And it's keys, not characters.
 
-Accessing video memory
-http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
--Controlling gate array
-https://cpctech.cpc-live.com/docs/garray.html
+- Accessing video memory
+ - http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
+ - Controlling gate array
+   - https://cpctech.cpc-live.com/docs/garray.html
 
+- Scanning keyboard
+  - Insert key on queue
+    - http://www.cpcwiki.eu/forum/programming/insert-key-in-keyboard-event-queue/
 
-Scanning keyboard
-Insert key on queue
-http://www.cpcwiki.eu/forum/programming/insert-key-in-keyboard-event-queue/
+  - http://www.cpcwiki.eu/forum/programming/load-using-firmware-loader-with-messages-without-'press-play-then-any-key'
+  - https://cpctech.cpc-live.com/docs/keyboard.html
+  - http://www.cpcwiki.eu/index.php/8255
+  - https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/is-there-any-recent-project-to-connect-a-pc-(ps2)-keyboard-to-the-cpc/
+  - http://www.cpcwiki.eu/forum/technical-support/amstrad-cpc-4646128664-external-keyboard/
 
-http://www.cpcwiki.eu/forum/programming/load-using-firmware-loader-with-messages-without-'press-play-then-any-key'
-
-https://cpctech.cpc-live.com/docs/keyboard.html
-http://www.cpcwiki.eu/index.php/8255
-https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/is-there-any-recent-project-to-connect-a-pc-(ps2)-keyboard-to-the-cpc/
-http://www.cpcwiki.eu/forum/technical-support/amstrad-cpc-4646128664-external-keyboard/
-
+  - AY and PPI
+    - https://cpctech.cpc-live.com/docs/psgnotes.htm
