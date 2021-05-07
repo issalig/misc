@@ -1,0 +1,12 @@
+Open comm utility in Windows (aka socket.listen)
+|wifi
+When WiFi Module connected (accept?) and Windows utility is connected
+
+Set on PC "File copy from CPC mode"
+Pc sends 1 until CPC answers
+|2PC
+
+
+In terminal send string with CR+LF (x0d x0a)
+
+
