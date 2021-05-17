@@ -115,7 +115,7 @@ bf                             ; bf is PRINT code
 ## Assembly
 
 
-And now that we know some things about BASIC, even we get down to the internal representation of a BASIC program, we are gonna play like the BIG boys, we are gonna play with **Z80 assembly**.
+And now that we know some things about BASIC, and even we got down to the internal representation of a BASIC program, we are gonna play like the BIG boys, we are gonna play with **Z80 assembly**.
 
 Simplifying, assembly is a list of operation codes (mnemonics) and parameters where these parameters can be numbers or registers.
 
@@ -165,7 +165,7 @@ Comments are placed after **;** and I **encourage** you to use them now that you
 For more information on Z80 instructions I find this link extremely clear http://www.z80.info/z80code.htm
 
 ### Hello world from the assembly side
-The following code is borrowed from the great http://www.chibiakumas.com prints the "Hello World!" string. I annotated this in order to better understand what it does and I think it will also help you.
+The following code is borrowed from the great http://www.chibiakumas.com and prints the "Hello World!" string. I annotated this code in order to better understand what it does and I think it will also help you.
 
 ```asm
 ; Got it from www.chibiakumas.com/z80/helloworld.php#LessonH1
@@ -237,7 +237,7 @@ WinAPE Z80 Assembler V1.0.13
 ```
 
 The generated code goes from &1200 to &1226, having a size of &27 (39 in decimal) bytes.
-The first instruction at address &1200 is 21 1A 12 that corresponds to LD HL,nn instruction (code &21) and address 121A. You can check codes at http://map.grauw.nl/resources/z80instr.php
+The first instruction at address &1200 is 21 1A 12 that corresponds to LD HL,nn instruction (code &21) and address 121A (first byte after operation code 1A is least significant one). You can check codes at http://map.grauw.nl/resources/z80instr.php
 
 And to run it call starting address (&1200) from BASIC as we set org &1200 in the asm code.
 ```basic
