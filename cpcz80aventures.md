@@ -320,7 +320,7 @@ Now we know a little bit of assembly and that we have also seen how a BASIC code
 So the next question is, could it be possible to "write" BASIC code from asm?
 Yes, it is.
 
-For this example I will use code borrowed from USIFAC card and we will write our HELLO.BAS directly from asm.
+For this example I will use code borrowed from USIFAC card and we will write our HELLO.BAS directly from asm. (USIFAC is a Serial interface board and much more. Take a look at https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/usifac-iimake-your-pc-or-usb-stick-an-hdd-for-amstrad-access-dsk-and-many-more!/)
 
 BASIC program start at &170 
 
