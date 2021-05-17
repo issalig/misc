@@ -497,4 +497,6 @@ defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
 ret
 ```
 
+Things I want to include soon: RSX calls, ROMs (a good example is https://github.com/llopis/amstrad-diagnostics), USIFAC programming, etc, ...
+
 To be continued.
