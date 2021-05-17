@@ -130,12 +130,10 @@ There are more registers but for now is enough.
 - **HL** The general 16 bit register, it's used pretty much everywhere you use 16 bit registers. It's most common uses are for 16 bit arithmetic and storing the addresses of stuff (strings, pictures, labels, etc.). Note that HL usually holds the original address while DE holds the destination address.
 
 ### Instructions
-Regarding instructions you will encounter LD, CP, JP, JR, RET, CALL on the following example
-
+Regarding instructions you will encounter LD, CP, JP, JR, RET, CALL on the following examples.
 
 - **LD**: I would seay this the main instruction, it LOADS or stores to a variable. A register will be used for one-byte numbers and for two-byte numbers, any two-byte register is fine, but HL is usually the best choice. 
     - ld a, 5 ; sets value 5 to accumulator register
-
 
 - **CP**: Comparison. It compares origin value with register A and sets Z flag to 1 if same values.
     - cp 5    ; compares current value and accumulator
@@ -149,6 +147,7 @@ Regarding instructions you will encounter LD, CP, JP, JR, RET, CALL on the follo
 - **JR**: Jump Relative. Similar to JP, but faster because it takes 2 bytes instead of 3. It is used to jump to near places +-127 bytes and allows relocatable routines :)
     - jr 1    ; goes to next instruction, useless here
 
+### Directives
 - **org**: Defines where the code starts. References to addresses will change according to this. As seen , JR will not be affected by this value.
     - org &1200
     
