@@ -138,14 +138,19 @@ Regarding instructions you will encounter LD, CP, JP, JR, RET, CALL on the follo
 - **CP**: Comparison. It compares origin value with register A and sets Z flag to 1 if same values.
     - cp 5    ; compares current value and accumulator
 
-- **RET**: Pops the stack and jumps to the address stored in the stack. With and argument is a conditional instruction (ret z)
-    - ret z   ; goes back if Z==1
-
 - **JP**: Jump Absolute. Goes to the specified  adress
     - jp 0    ; goes to 0
 
 - **JR**: Jump Relative. Similar to JP, but faster because it takes 2 bytes instead of 3. It is used to jump to near places +-127 bytes and allows relocatable routines :)
     - jr 1    ; goes to next instruction, useless here
+
+- **CALL**: Jumps to a subroutine and the return location is stored in the stack. Thus we can go back from RET. Remember that subroutines are called by a CALL and terminated by a RET. 
+    - CALL &bb5a    ; call TXT OUTPUT
+    - CALL NZ &bb5a ; call TXT OUPUT if flag Z is not activated 
+
+- **RET**: Pops the stack and jumps to the address stored in the stack. With and argument is a conditional instruction (ret z). It is the best friend of CALL.
+    - ret z   ; goes back if Z==1
+
 
 ### Directives
 - **org**: Defines where the code starts. References to addresses will change according to this. As seen , JR will not be affected by this value.
