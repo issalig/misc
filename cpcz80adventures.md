@@ -7,7 +7,13 @@ I have used Linux but on Windows you can also do it.
 I will use WinAPE http://www.winape.net/downloads.jsp running under linux with WINE (sudo apt install wine).
 Also I will use iDSK tools https://github.com/cpcsdk/idsk but you can use similar tools.
 
-For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol normally used for that.
+Binary numbers are composed of binary digits that are 0's or 1's. The conversion to decimal is done by multiplying each digit by the i-th power of two.
+The rightmost bit is the least significative bit (LSB) and will have index 0, on the contrary, the leftmost bit is the most signigicative (MSB) and will have the highest index.
+For example and 8bit binary number (separated in groups of 4 to be more readable) 0001 0001 corresponds to 1*2^4+1*2^0=16+1=17
+
+Hexadecimal is a numbering system that uses base 16 system and offers a compact view of a long binary number. Digits are 0,1,2,3,4,5,6,7,8,9,A,B,C,D,D,E,F and yes letters are used to represent 10,11,12,13,14,15. Thus, we take our friend 0001 0001 and for each group of 4 bytes we take the conversion to hexa 0001 0001 -> 11. FF corresponds to 255 in decimal and 1111 1111 in binary.
+
+For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol normally used for that. Locomotive BASIC uses &.
 
 These are some of resources I used to on my way to write this.
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
@@ -361,7 +367,7 @@ Ready
 
 And what about running the BASIC program from asm? Well, we will do this later.
 
-##Jumpblock
+## Jumpblock
 
 In the examples above you have noticed that we have used CALL &XXXX. These are calls to utilities provided by the firmware such as printing a char in screen. In particular, this function is called from &BB5A and is known as TXT OUTPUT. Different computers can have different addresses for the firmware function but a solution to have a common entry point is to share a common address and then jump from there to the routine code. This set of jumps is known as jumpblock.
 
