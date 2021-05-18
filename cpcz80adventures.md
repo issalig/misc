@@ -354,7 +354,7 @@ Yes, it is.
 
 For this example I will use code borrowed from USIFAC card and we will write our HELLO.BAS directly from asm. (USIFAC is a Serial interface board and much more. Take a look at https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/usifac-iimake-your-pc-or-usb-stick-an-hdd-for-amstrad-access-dsk-and-many-more!/)
 
-BASIC program start at &170 
+BASIC programs start at &170 (see memory table above).
 
 ```asm
 data_size equ 39                            ; size of BASIC file, we know it is 39 bytes
