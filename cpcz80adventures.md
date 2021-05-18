@@ -9,7 +9,7 @@ Also I will use iDSK tools https://github.com/cpcsdk/idsk but you can use simila
 
 Binary numbers are composed of binary digits that are 0's or 1's. The conversion to decimal is done by multiplying each digit by the i-th power of two.
 The rightmost bit is the least significative bit (LSB) and will have index 0, on the contrary, the leftmost bit is the most signigicative (MSB) and will have the highest index.
-For example and 8bit binary number (separated in groups of 4 to be more readable) 0001 0001 corresponds to 1*2^4+1*2^0=16+1=17
+For example and 8bit binary number (separated in groups of 4 to be more readable) 0001 0001 corresponds to 1\*2^4+1\*2^0=16+1=17
 
 Hexadecimal is a numbering system that uses base 16 system and offers a compact view of a long binary number. Digits are 0,1,2,3,4,5,6,7,8,9,A,B,C,D,D,E,F and yes letters are used to represent 10,11,12,13,14,15. Thus, we take our friend 0001 0001 and for each group of 4 bytes we take the conversion to hexa 0001 0001 -> 11. FF corresponds to 255 in decimal and 1111 1111 in binary.
 
@@ -21,8 +21,12 @@ These are some of resources I used to on my way to write this.
 - A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
 - Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
 - CPC6128 operating system ROM http://www.cpctech.org.uk/docs/os.asm
+- Z80 timings https://wiki.octoate.de/lib/exe/fetch.php/amstradcpc:z80_cpc_timings_cheat_sheet.20131019.pdf
 - Markdown cheatsheet https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 - and many others ...
+
+## Index
+
 
 ## BASIC
 
@@ -322,6 +326,24 @@ call &1200
 ```
 If MEMORY is not set, we will get "Memory full" message.
 
+### Memory
+We have already used memory address &1200 which is in the area of BASIC (0170-HIMEM) and later we will use functions from the jumpblock (bb5a) and RST routines (0008). This table shows you the memory layout.
+
+| RAM | ROM | External |
+|-|-|-|
+| FFFF-C000 Screen memory (16k) | 16k Upper ROM (BASIC) | 16k max. 252 ext ROMS |
+| BFFF-B100 Stack, firmware and jumblock | 3FFF-0000 16k firmware ROM |  |
+| B0FF-AC00 BASIC Workspace |  |  |
+| -ABFF Background data (&500 bytes used by AMSDOS if present) |  |  |
+| -     User defined graphics |  |  |
+| -     Space for machine code routines |  |  |
+| - HIMEM Strings area |  |  |
+| -     FREE SPACE (used by AMSDOS for loading and saving) |  |  |
+| -     Arrays area |  |  |
+| -     Variables and DEF FNs area |  |  |
+| -0170 Program area |  |  |
+| 016F-0040 Foreground workspace |  |  |
+| 003F-0000 RST routines |  |  |
 
 ### Mixing asm and BASIC
 
