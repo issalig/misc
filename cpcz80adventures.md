@@ -16,6 +16,7 @@ Hexadecimal is a numbering system that uses base 16 system and offers a compact 
 For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol normally used for that. Locomotive BASIC uses &.
 
 These are some of resources I used to on my way to write this.
+- CPCWiki, a helpful community https://www.cpcwiki.eu/forum/programming/
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
 - Firmware http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
 - A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
