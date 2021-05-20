@@ -28,8 +28,9 @@ These are some of resources I used to on my way to write this.
 
 ## Index
 
-(#BASIC)
-(#Assembly)
+(##BASIC)
+(##Assembly)
+(##Mixing-asm-and-BASIC)
 
 ## BASIC
 
@@ -342,7 +343,7 @@ We have already used memory address &1200 which is in the area of BASIC (0170-HI
 | 016F-0040 Foreground workspace |  |  |
 | 003F-0000 RST routines |  |  |
 
-### Mixing asm and BASIC
+## Mixing asm and BASIC
 
 Now we know a little bit of assembly and we have also seen how a BASIC code is stored in memory.
 
