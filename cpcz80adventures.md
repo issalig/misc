@@ -28,6 +28,8 @@ These are some of resources I used to on my way to write this.
 
 ## Index
 
+(#BASIC)
+(#Assembly)
 
 ## BASIC
 
