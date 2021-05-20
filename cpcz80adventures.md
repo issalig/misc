@@ -127,17 +127,33 @@ bf                             ; bf is PRINT code
 
 And now that we know some things about BASIC, and even we got down to the internal representation of a BASIC program, we are gonna play like the BIG boys, we are gonna play with **Z80 assembly**.
 
-Simplifying, assembly is a list of operation codes (mnemonics) and parameters where these parameters can be numbers or registers.
+Simplifying, assembly is a list of statements of operation codes (mnemonics) and parameters where these parameters can be numbers or registers. If the parameter in between parentheses "()" indicates it is a memory pointer.
+
+Labels are used to reference lines of code and the assembler will assign an address to them.
+
+```asm
+label_init:
+;DO THINGS
+jp label_init
+```
 
 ### Registers
 
-The important Z80 8-bit registers are A, B, C, D, E, F, H and L and can store any number from 0 to 255. A set of important 16-bit registers are AF BC DE HL, IX, IY and can store a number from 0 to 65535.
+Registers are special internal memory of 8-bit. Internally they are in pairs forming a 16-bit register.
+
+The important Z80 8-bit registers are A, B, C, D, E, F, H and L and can store any number from 0 to 255. A set of important 16-bit registers are AF BC DE HL, IX, IY and can store a number from 0 to 65535. Changing H will also affect HL.
 There are more registers but for now is enough.
 
-- **A** is also called the "accumulator". It is the primary register for arithmetic operations and accessing memory.
+- **A** is also called the "accumulator". It is the primary register for arithmetic operations and accessing memory. It cannot be used to store information as all 8bit calculations are done against this register.
 
+- **BC** B and C form BC pair. B is usually a good option for a 8bit loop and C is usually used for I/O ports. BC pair is usually used to store **length** of a memory block.
+
+- **DE** D and E form DE pair. Similar to BC but it is normally used to store **destination** addresses.
 
 - **HL** The general 16 bit register, it's used pretty much everywhere you use 16 bit registers. It's most common uses are for 16 bit arithmetic and storing the addresses of stuff (strings, pictures, labels, etc.). Note that HL usually holds the original address while DE holds the destination address.
+- **SP** This is the stack pointer where CALL and PUSH store their values.
+
+- **F** Flag register comes in the pair AF. It will be used mainly in conditional operations. Bit 7 is SF sign flag (<0 S=1), bit 6 is ZF zero flag and bit 0 is CF carry flag.
 
 ### Instructions
 Regarding instructions you will encounter LD, CP, JP, JR, RET, CALL on the following examples.
