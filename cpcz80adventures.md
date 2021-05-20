@@ -28,9 +28,9 @@ These are some of resources I used to on my way to write this.
 
 ## Index
 
-(##BASIC)
-(##Assembly)
-(##Mixing-asm-and-BASIC)
+[BASIC](#BASIC)
+[Assembly](#Assembly)
+[Mixing asm and BASIC](#Mixing-asm-and-BASIC)
 
 ## BASIC
 
