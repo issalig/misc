@@ -541,6 +541,31 @@ defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
 
 ret
 ```
+
+
+## TODOs
+Things I want to include soon: RSX calls, ROMs (a good example is https://github.com/llopis/amstrad-diagnostics), USIFAC programming, etc, ...
+
+To be continued.
+
+## ROMs
+
+Roms can be Foreground of Background. Foreground are in overall control, while background might provide additional facilities in response to a call from the current foreground program but would not be able to run a complete program on its own.
+
+In CPC 464 it is possible to have up to seven background ROMs in the range 1 to 7 that will have reference numbers in the range 0 to 257. ROM numbers must be consecutive from 0 or 1 upwards. In the case that reference 0 is used, the on.board ROM will be available at the first reference number not used by external ROMs. A foreground program may use up to **four** ROMs.
+
+A given ROM will take addresses C000 to FFFF and maybe up to 16K. The first six bytes will be the following:
+- ROM type: 0 for foreground, 1 for background, 3 for extension (onboard ROM is type &80)
+- ROM Mark number
+- ROM Version number
+- ROM Modification level
+- Address of external command table (2 bytes)
+
+Then there will be a jumplock beginning with the entry to the initialisation routing and then jumps that match the external command words. The last byte of these words will have the bit &80.
+
+KL FIND COMMAND 
+
+
 ## RSX
 **WARNING: THIS IS SECTION IS STILL A DRAFT**
 
@@ -558,10 +583,3 @@ The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM
 The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routin
 
 
-
-
-
-## TODOs
-Things I want to include soon: RSX calls, ROMs (a good example is https://github.com/llopis/amstrad-diagnostics), USIFAC programming, etc, ...
-
-To be continued.
