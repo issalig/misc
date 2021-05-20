@@ -151,6 +151,7 @@ There are more registers but for now is enough.
 - **DE** D and E form DE pair. Similar to BC but it is normally used to store **destination** addresses.
 
 - **HL** The general 16 bit register, it's used pretty much everywhere you use 16 bit registers. It's most common uses are for 16 bit arithmetic and storing the addresses of stuff (strings, pictures, labels, etc.). Note that HL usually holds the original address while DE holds the destination address.
+
 - **SP** This is the stack pointer where CALL and PUSH store their values.
 
 - **F** Flag register comes in the pair AF. It will be used mainly in conditional operations. Bit 7 is SF sign flag (<0 S=1), bit 6 is ZF zero flag and bit 0 is CF carry flag.
@@ -196,40 +197,35 @@ Comments are placed after **;** and I **encourage** you to use them now that you
 For more information on Z80 instructions I find this link extremely clear http://www.z80.info/z80code.htm
 
 ### Hello world from the assembly side
-The following code is borrowed from the great http://www.chibiakumas.com and prints the "Hello World!" string. I annotated this code in order to better understand what it does and I think it will also help you.
+The following code prints the "Hello World!" string and have full explanations of what it does.
 
 ```asm
-; Got it from www.chibiakumas.com/z80/helloworld.php#LessonH1
-; and completed with explanations for noobs like me
+        TXT_OUTPUT      equ &bb5a 
+	                        ; TXT OUTPUT Output a character or controlcode to the Text VDU
+                                ; Info on firmware calls www.cpcwiki.eu/imgs/7/73/S968se14.pdf
 
-org &1200                ; our code will start at &1200
+        org      &1200          ; our code will start at &1200
 
-PrintChar   equ &bb5a    ; TXT OUTPUT Output a character or controlcode to the Text VDU
-                         ; Info on firmware calls www.cpcwiki.eu/imgs/7/73/S968se14.pdf
+main:                         
+        ld      hl,message      ; load address of string in HL
+        call    printString     ; print it
+        ret
 
-ld hl, Message           ; load address of string in HL
-call PrintString         ; print it
+printString:
+        ld      a,(hl)          ; load char index stored in HL into A
+        cp      a               ; if 0 (last char) then Z flag will be set
+        ret     z               ; returns if Z flag is set
+        inc     hl              ; hl=hl+1
+        call    TXT_OUTPUT      ; call TXT_OUTPUT
+        jr      printString
 
-; print CR+LF
-Newline:
-	ld a,13              ; CR
-	call Printchar
-	ld a,10	             ; LF
-	jp Printchar
-
-; loop until last char (255) and print char
-PrintString:
-	ld a,(hl)            ; load char index stored in HL into A
-	cp 255               ; A-255  if equal Z flag will be set
-	ret z                ; returns if Z flag is set
-	inc hl	             ; hl=hl+1
-	call PrintChar       ; call BB5A
-	jr PrintString
-
-; it is always safe to put defb after code (especially ret or jump), so this data will not be executed
-Message: db 'Hello World!',255   ;string is ended with 255 as end of string
-
+message:
+        defb    "Hello World!",0 ; String is ended with 0 and prinString will stop on 0
 ```
+
+It is always safe to put defb after code (especially ret or jump), so this data will not be executed.
+
+We can also use "or a" instead of "cp a" which is faster faster we are not in a hurry this time.
 
 Once you have taken a look to the asm code, let's put it into WinAPE (Assembler->Show assembler), copypaste it and then assemble it (Ctrl+F9). If all was correct it should give 0 errors.
 
@@ -238,37 +234,30 @@ WinAPE shows the binary digits generated for this program
 ```asm
 WinAPE Z80 Assembler V1.0.13
 
-000001  0000                ; Got it from www.chibiakumas.com/z80/helloworld.php#LessonH1
-000002  0000                ; and completed with explanations for noobs like me
-000004  0000  (1200)        org &1200                ; our code will start at &1200
-000006  1200  (BB5A)        PrintChar   equ &bb5a    ; TXT OUTPUT Output a character or controlcode to the Text VDU
-000007  1200                                         ; Info on firmware calls www.cpcwiki.eu/imgs/7/73/S968se14.pdf
-000009  1200  21 1A 12      ld hl, Message           ; load address of string in HL
-000010  1203  CD 10 12      call PrintString         ; print it
-000012  1206                ; print CR+LF
-000013  1206                Newline
-000014  1206  3E 0D         	ld a,13              ; CR
-000015  1208  CD 5A BB      	call Printchar
-000016  120B  3E 0A         	ld a,10	             ; LF
-000017  120D  C3 5A BB      	jp Printchar
-000019  1210                ; loop until last char (255) and print char
-000020  1210                PrintString
-000021  1210  7E            	ld a,(hl)            ; load char index stored in HL into A
-000022  1211  FE FF         	cp 255               ; A-255  if equal Z flag will be set
-000023  1213  C8            	ret z                ; returns if Z flag is set
-000024  1214  23            	inc hl	             ; hl=hl+1
-000025  1215  CD 5A BB      	call PrintChar       ; call BB5A
-000026  1218  18 F6         	jr PrintString
-000028  121A                ; it is always safe to put defb after code (especially ret or jump), so this data will not be executed
-000029  121A                Message
-000029  121A  48 65 6C 6C    db 'Hello World!',255   ;string is ended with 255 as end of string
-        121E  6F 20 57 6F 
-        1222  72 6C 64 21 
-        1226  FF 
+000001  0000  (BB5A)                TXT_OUTPUT      equ &bb5a 
+000002  0000                	                        ; TXT OUTPUT Output a character or controlcode to the Text VDU
+000003  0000                                                ; Info on firmware calls www.cpcwiki.eu/imgs/7/73/S968se14.pdf
+000005  0000  (1200)                org      &1200          ; our code will start at &1200
+000007  1200                main
+000008  1200  21 10 12              ld      hl,message      ; load address of string in HL
+000009  1203  CD 07 12              call    printString     ; print it
+000010  1206  C9                    ret
+000012  1207                printString
+000013  1207  7E                    ld      a,(hl)          ; load char index stored in HL into A
+000014  1208  BF                    cp      a               ; if 0 then Z flag will be set
+000015  1209  C8                    ret     z               ; returns if Z flag is set
+000016  120A  23                    inc     hl              ; hl=hl+1
+000017  120B  CD 5A BB              call    TXT_OUTPUT      ; call TXT_OUTPUT
+000018  120E  18 F7                 jr      printString
+000020  1210                message
+000021  1210  48 65 6C 6C           defb    "Hello World!",0 ; String is ended with 0 and prinString will stop on 0
+        1214  6F 20 57 6F 
+        1218  72 6C 64 21 
+        121C  00 
 ```
 
-The generated code goes from &1200 to &1226, having a size of &27 (39 in decimal) bytes.
-The first instruction at address &1200 is 21 1A 12 that corresponds to LD HL,nn instruction (code &21) and address 121A (first byte after operation code 1A is least significant one). You can check codes at http://map.grauw.nl/resources/z80instr.php
+The generated code goes from &1200 to &121C, having a size of &1D (20 in decimal) bytes.
+The first instruction at address &1200 is 21 10 12 that corresponds to LD HL,nn instruction (code &21) and address 1210 (first byte after operation code 10 is least significant one). You can check instruction codes at http://map.grauw.nl/resources/z80instr.php
 
 And to run it call starting address (&1200) from BASIC as we set org &1200 in the asm code.
 ```basic
@@ -276,8 +265,8 @@ call &1200
 ```
 If everything was fine, now you are seeing "Hello world!" on the screen.
 
-Now save it with (size of the program is 39 (&27) bytes as commented before)
-save "hello.bin",b,&1200,&27
+Now save as a binary file starting at &1200 and size &1D (29).
+save "hello.bin",b,&1200,&1D
 
 Eject disc if necessary and ask iDSK what is this file about.
 
@@ -288,57 +277,46 @@ iDSK can disassemble the program but it does not know that there is a string sta
 iDSK hello.dsk -z hello.bin
 DSK : hello.dsk
 Amsdos file : hello.bin
-Taille du fichier : 39
-1200 21 1A 12       LD HL,121A
-1203 CD 10 12       CALL 1210
-1206 3E 0D          LD A,0D
-1208 CD 5A BB       CALL BB5A    ; TXT_OUTPUT
-120B 3E 0A          LD A,0A
-120D C3 5A BB       JP BB5A
-1210 7E             LD A,(HL)
-1211 FE FF          CP FF
-1213 C8             RET Z
-1214 23             INC HL
-1215 CD 5A BB       CALL BB5A    ; TXT_OUTPUT
-1218 18 F6          JR 1210
-121A 48             LD C,B       ; This is a string but iDSK does not know it
-121B 65             LD H,L       ; and interpret it as Z80 instructions
-121C 6C             LD L,H
-121D 6C             LD L,H       ; That's why it is recommended to place the defb
-121E 6F             LD L,A       ; after the code or in a place where it cannot be 
-121F 20 57          JR NZ,1278   ; reached. Look at the previous instruction &1218
-1221 6F             LD L,A       ; It is a jump to &1210!
-1222 72             LD (HL),D
-1223 6C             LD L,H
-1224 64             LD H,H
-1225 21 FF 1A       LD HL,1AFF
-```
+Taille du fichier : 29
+1200 21 10 12       LD HL,1210
+1203 CD 07 12       CALL 1207
+1206 C9             RET
+1207 7E             LD A,(HL)
+1208 BF             CP A
+1209 C8             RET Z
+120A 23             INC HL
+120B CD 5A BB       CALL BB5A    ; TXT_OUTPUT
+120E 18 F7          JR 1207      ; This jump prevents going into defb area
+1210 48             LD C,B       ; This is a string but iDSK does not know it
+1211 65             LD H,L       ; and interprets it as instructions
+1212 6C             LD L,H
+1213 6C             LD L,H
+1214 6F             LD L,A
+1215 20 57          JR NZ,126E
+1217 6F             LD L,A
+1218 72             LD (HL),D
+1219 6C             LD L,H
+121A 64             LD H,H
+121B 21 00 1A       LD HL,1A00
 
-If you want an easier way of having the binary. You can get it from iDSK and paste it in https://onlinedisassembler.com
+```
+iDSK can also show and hexadecimal view of the file and it can be also pasted on  https://onlinedisassembler.com
 
 ```
 iDSK hello.dsk -h hello.bin
 DSK : hello.dsk
 Amsdos file : hello.bin
-#0000 21 1A 12 CD 10 12 3E 0D CD 5A BB 3E 0A C3 5A BB | !.....>..Z.>..Z.
-#0010 7E FE FF C8 23 CD 5A BB 18 F6 48 65 6C 6C 6F 20 | ....#.Z...Hello.
-#0020 57 6F 72 6C 64 21 FF 00 00 00 00 00 00 00 00 00 | World!..........
-#0030 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 | ................
-#0040 1A 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 | ................
+#0000 21 10 12 CD 07 12 C9 7E BF C8 23 CD 5A BB 18 F7 | !.........#.Z...
+#0010 48 65 6C 6C 6F 20 57 6F 72 6C 64 21 00 1A 00 00 | Hello.World!....
 ```
 
-We save the file, but we want to load it
-http://www.cpcwiki.eu/forum/programming/load-address-problem/
-https://www.cpcwiki.eu/forum/programming/memory-limit-on-loading-programs/
-
-http://www.cpcwiki.eu/forum/programming/reading-a-binary-file-into-memory-using-basic/
-
-Now we need to reserve memory, as we will be using the program at &1200, the last BASIC memory will be one bye less, i.e. &11FF
+Ok, we saved the file, switch off the computer, but next day we want to load it.
+First, we need reserve memory and as we will be using the program at &1200, the last BASIC memory will be one bye less, i.e. &11FF. Then we LOAD an CALL.
 
 ```basic
 MEMORY &11FF
 LOAD "hello.bin", &1200
-call &1200
+CALL &1200
 ```
 If MEMORY is not set, we will get "Memory full" message.
 
@@ -363,35 +341,40 @@ We have already used memory address &1200 which is in the area of BASIC (0170-HI
 
 ### Mixing asm and BASIC
 
-Now we know a little bit of assembly and that we have also seen how a BASIC code is stored in memory.
+Now we know a little bit of assembly and we have also seen how a BASIC code is stored in memory.
 
 So the next question is, could it be possible to "write" BASIC code from asm?
 Yes, it is.
 
 For this example I will use code borrowed from USIFAC card and we will write our HELLO.BAS directly from asm. (USIFAC is a Serial interface board and much more. Take a look at https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/usifac-iimake-your-pc-or-usb-stick-an-hdd-for-amstrad-access-dsk-and-many-more!/)
 
-BASIC programs start at &170 (see memory table above).
+It is important to remember that BASIC programs start at &170 (see memory table above). The following program takes a bytes representing a BASIC program and copies them on 170. We have already shoewn that these bytes can be extracted with iDSK hello.dsk -h hello.bas
+
+Before we commented that HL register is normally used for general purpose or **source**, DE for **DEstination** and BC for **length**. Here we have an example.
 
 ```asm
-data_size equ 39                            ; size of BASIC file, we know it is 39 bytes
-addr equ &170                               ; BASIC files normally start at 170, let's write in this area
+data_size equ 39                                ; size of BASIC file, we know it is 39 bytes
+addr    equ &170                                ; BASIC files normally start at 170, let's write in this area
 org	&1200                                   ; and store our program in &1200
 
-                                            ; we will use 16-bit registers (hl, de, ... to deal with memory addresses that take 2 bytes &AABB)
-	ld	hl, basic_code                      ; hl = address where the basic code is stored, i.e. org + something but the assembler does it for us
-	ld 	de, addr                            ; de = &170
-	ld	bc, data_size                       ; bc = the data size
+main:
+                                                ; we will use 16-bit registers (hl, de, ... to deal with memory addresses that take 2 bytes &AABB)
+	ld	hl, basic_code                  ; hl = address where basic_code is starts, i.e. org + something but the assembler does it for us
+	ld 	de, addr                        ; de = &170
+	ld	bc, data_size                   ; bc = data size
 	ldir                                    ; ldir copies a block from hl address to de address of length bc (i.e. memcpy)
-    
+        ret                                     ; do not forget to go back from call
+	
 basic_code:
 defb &0c,&00,&0a,&00,&c5,&20,&48,&65,&6c,&6c,&6f,&00,&15,&00,&14,&00,&bf
-defb &20,&22,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&22,&00,&00,&00    
-    
+defb &20,&22,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&22,&00,&00,&00 
 ```
 
 Now compile it, execute it with CALL, type LIST command and our Hello World! code will appear. Of course you can also RUN it.
 
 ```
+list
+Ready
 CALL &1200
 Ready
 list
