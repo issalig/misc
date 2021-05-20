@@ -36,6 +36,8 @@ These are some of resources I used to on my way to write this.
 
 [Jumpblock](#Jumpblock)
 
+[TODOs](#TODOs)
+
 ## BASIC
 
 Now let's start and go back to your good old BASIC days and type the following code on WinAPE. If you are new to CPC world, welcome aboard!
@@ -536,7 +538,27 @@ defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
 
 ret
 ```
+## RSX
+**WARNING: THIS IS SECTION IS STILL A DRAFT**
 
+10 Expansion ROMs, Resident System Extensions and RAM Programs
+https://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
+https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX
+
+An RSX is similar to a background ROM. Responsibility for loading an RSX and providing it  with  memory  lies  with  the  foreground  program. 
+
+To  fit  in  with  the  dynamic  allocation  of  memory to background ROMs it is recommended that RSXs should be position independent or  relocated  when  loaded.  An  RSX  could  be  relocated  by  writing  a  short  BASIC  'loader' program  which  reads  the  RSX  in  a  format  which  may  be  relocated  easily  and  POKEs  into  store.
+
+Once an RSX is load it may be placed on the list of possible handlers of external commands (see  following  page)  by  calling  KL  LOG  EXT,  passing  it  the  address  of the RSXs external command  table  and  a  four  byte  block  of  memory  (in  the  central  32K  of  RAM)  for  the  Kernel's  use.  
+
+The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM  (see  section  10.2).  
+The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routin
+
+
+
+
+
+## TODOs
 Things I want to include soon: RSX calls, ROMs (a good example is https://github.com/llopis/amstrad-diagnostics), USIFAC programming, etc, ...
 
 To be continued.
