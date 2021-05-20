@@ -548,26 +548,46 @@ Things I want to include soon: RSX calls, ROMs (a good example is https://github
 
 To be continued.
 
+**WARNING: THIS AREA IS STILL A DRAFT*
+
+
 ## ROMs
 
 Roms can be Foreground of Background. Foreground are in overall control, while background might provide additional facilities in response to a call from the current foreground program but would not be able to run a complete program on its own.
 
-In CPC 464 it is possible to have up to seven background ROMs in the range 1 to 7 that will have reference numbers in the range 0 to 257. ROM numbers must be consecutive from 0 or 1 upwards. In the case that reference 0 is used, the on.board ROM will be available at the first reference number not used by external ROMs. A foreground program may use up to **four** ROMs.
+A resident system extension (RSX) is similar in use to a background ROM, but it must be loaded into RAM before it can be used.
+
+A foreground ROM contains one or more programs. The on-board BASIC is the default foreground program.
+
+
+In the CPC 464 it is possible to have up to seven background ROMs and 16 in the CPC 6128 that will have reference numbers in the range 0 to 251. ROM numbers must be consecutive from 0 or 1 upwards. In the case that reference 0 is used, the on.board ROM will be available at the first reference number not used by external ROMs. A foreground program may use up to **four** ROMs.
+
+
 
 A given ROM will take addresses C000 to FFFF and maybe up to 16K. The first six bytes will be the following:
-- ROM type: 0 for foreground, 1 for background, 3 for extension (onboard ROM is type &80)
+- ROM type: 0 for foreground, 1 for background, 2 for extension (onboard ROM is type &80)
 - ROM Mark number
 - ROM Version number
 - ROM Modification level
 - Address of external command table (2 bytes)
 
-Then there will be a jumplock beginning with the entry to the initialisation routing and then jumps that match the external command words. The last byte of these words will have the bit &80.
+Then there will be a jumplock beginning with the entry to the initialisation routing and then jumps that match the external command words. The last byte of these words will have the bit 7 set to 1 (&80).
+
+- Address of command name table
+- Jumpblock entry 0
+- Jumpblock entry 1
+- ...
+
+
 
 KL FIND COMMAND 
 
+References:
+[968] Soft968, Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs http://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
+[INS] The Ins and Outs of the AMSTRAD CPC464 https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
+
 
 ## RSX
-**WARNING: THIS IS SECTION IS STILL A DRAFT**
 
 10 Expansion ROMs, Resident System Extensions and RAM Programs
 https://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
