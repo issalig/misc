@@ -278,10 +278,13 @@ If everything was fine, now you are seeing "Hello world!" on the screen.
 Now save as a binary file starting at &1200 and size &1D (29).
 save "hello.bin",b,&1200,&1D
 
-Eject disc if necessary and ask iDSK what is this file about.
+But an easier wat is to tell the assembler to write it for us. Then, we can add it to a dsk file with WinAPE or iDSK.
+
+```asm
+write "hello.bin"
+```
 
 iDSK can disassemble the program but it does not know that there is a string starting at &1200, so it will interprete these bytes as Z80 instructions :) Take into account that these defb regions sholud not be executed. In this example there is a jump just before the defb and this help us to keep things right.
-
 
 ```
 iDSK hello.dsk -z hello.bin
@@ -310,7 +313,7 @@ Taille du fichier : 29
 121B 21 00 1A       LD HL,1A00
 
 ```
-iDSK can also show and hexadecimal view of the file and it can be also pasted on  https://onlinedisassembler.com
+iDSK can also show and hexadecimal view of the file that can be also pasted on  https://onlinedisassembler.com
 
 ```
 iDSK hello.dsk -h hello.bin
