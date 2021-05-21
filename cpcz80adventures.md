@@ -621,10 +621,81 @@ KL ROM WALK looks for background roms and initialises any that finds. (calls 1st
 
 KL INIT BACK initializes a particular background ROM
 
-
-
-
 KL FIND COMMAND 
+
+
+And the code for a Hello World foreground ROM will be this:
+```asm
+XT_OUTPUT      equ &bb5a 
+ORG #C000
+write "HELLO.ROM"
+
+	; ROM header
+	db #01, #00, #00, #05
+
+RSXTable:
+	defw RSXNames
+	jp Bootup
+	jp rsx_hello
+	jp rsx_bye
+
+
+RSXNames:
+                defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
+	defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
+
+	db 0                     ;end of name table marker
+
+
+Bootup:
+	push 	af
+	push 	bc
+	push 	de
+	push 	hl
+	ld 	hl, boot_message
+                call printString
+	pop 	hl
+	pop 	de
+	pop 	bc
+	pop 	af
+	ret
+
+printString:
+        ld      a,(hl)          ; load char index stored in HL into A
+        cp      0               ; if 0 then Z flag will be set
+        ret     z               ; returns if Z flag is set
+        inc     hl              ; hl=hl+1
+        call    TXT_OUTPUT      ; call TXT_OUTPUT
+        jr      printString
+
+
+; Code for the example RSXs
+
+.rsx_hello                           ; here  we use a point at the beginning instead of colon at end
+        ld      hl,hello_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+rsx_bye:
+        ld      hl,bye_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+boot_message:
+	defb "Hello World ROM",13,10,13,10,0
+
+hello_message:
+	defb "Hello World from RSX!",0
+
+bye_message:
+	defb "Bye!",0
+```
+With write "HELLO.ROM" the assembler saves it to a file. Then on WinAPE we go to Setup->Memory->ROM and select for example Upper 5 and Select File...
+
+If all was ok we will see the sentence Hello World from ROM! before the Ready message. 
+
+If we want to check what is doing we can go to WinAPE Debugger and select Memory->Any Rom->UpperROM and select slot 5.
+
 
 References:
 [968] Soft968, Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs http://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
@@ -647,5 +718,85 @@ Once an RSX is load it may be placed on the list of possible handlers of externa
 
 The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM  (see  section  10.2).  
 The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routin
+
+In the following page 8https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX)  there is an example to define a RSX.
+
+We will be using our Hello World routine
+
+```asm
+; RSX Hello World
+
+.kl_log_ext equ &bcd1
+
+;; this can be any address in the range &0040-&a7ff.
+org &8000
+
+;;-------------------------------------------------------------------------------
+;; install RSX
+
+ld hl, work_space		;;address of a 4 byte workspace useable by Kernel
+ld bc, jump_table		;;address of command name table and routine handlers
+jp kl_log_ext		;;Install RSX's
+
+.work_space                ;Space for kernel to use
+defs 4
+;;-------------------------------------------------------------------------------
+;; RSX definition
+
+.jump_table
+defw name_table            ;address pointing to RSX commands 
+
+                           ;list of jump commands associated with each command
+                           
+                           ;The name (in the name_table) and jump instruction
+                           ;(in the jump_table), must be in the same
+                           ;order.
+
+                           ;i.e. the first name in the name_table refers to the
+                           ;first jump in the jump_table, and vice versa.
+
+jp rsx_hello           ;routine for COMMAND1 RSX
+jp rsx_bye           ;routine for COMMAND2 RSX
+
+
+;; the table of RSX function names
+;; the names must be in capitals.
+
+.name_table
+defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
+defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
+
+defb 0                     ;end of name table marker
+
+; Code for the example RSXs
+
+.rsx_hello                           ; we use a point at the beginning instead of colon at end
+        ld      hl,hello_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+.rsx_bye
+        ld      hl,bye_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+
+        TXT_OUTPUT      equ &bb5a
+
+printString:
+        ld      a,(hl)          ; load char pointed by HL into A
+        cp      0               ; if 0 then Z flag will be set
+        ret     z               ; returns if Z flag is set
+        inc     hl              ; increase pointer
+        call    TXT_OUTPUT      ; call TXT_OUTPUT
+        jr      printString
+
+
+hello_message:
+defb "Hello World from RSX!",0
+
+bye_message:
+defb "Bye!",0
+```
 
 
