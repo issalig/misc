@@ -777,14 +777,19 @@ If we want to check what is doing we can go to WinAPE Debugger and select Memory
 
 For more and complete information check the following references.
 
-References:
+### References:
 [968] Soft968, Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs http://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
 [INS] The Ins and Outs of the AMSTRAD CPC464 https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
 https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interface-(new-to-cpc)/100/
 
 
-
 # DRAFT AREA
+
+## Analysis of Roms
+- Amstrad diag
+- 
+
+## Interface cards
 
 
 Let's see how would it be the code
