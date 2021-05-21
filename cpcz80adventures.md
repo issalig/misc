@@ -358,7 +358,7 @@ We have already used memory address &1200 which is in the area of BASIC (0170-HI
 | 003F-0000 RST routines |  |  |
 
 ## Mixing asm and BASIC
-[Up](#CPC-Basic-and-Z80-adventures) [Previous](#Assembly) [Next](#RSX)
+[Up](#CPC-Basic-and-Z80-adventures) [Previous](#Assembly) [Next](#Jumpblock)
 
 
 
@@ -410,6 +410,8 @@ Ready
 And what about running the BASIC program from asm? Well, we will do this later.
 
 ## Jumpblock
+
+[Up](#CPC-Basic-and-Z80-adventures) [Previous](#Mixing-asm-and-BASIC) [Next](#RSX)
 
 In the examples above you have noticed that we have used CALL &XXXX. These are calls to utilities provided by the firmware such as printing a char in screen. In particular, this function is called from &BB5A and is known as TXT OUTPUT. Different computers can have different addresses for the firmware function but a solution to have a common entry point is to share a common address and then jump from there to the routine code. This set of jumps is known as jumpblock.
 
@@ -551,6 +553,7 @@ ret
 ```
 
 ## RSX
+[Up](#Index) [Previous](#Jumpblock)
 
 We already know about BASIC, asm and jumpblocks where we bypassed TXT OUTPUT. Let's dive even deeper and explore RSX.
 
