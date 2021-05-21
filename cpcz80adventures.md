@@ -38,7 +38,8 @@ These are some of resources I used to on my way to write this.
 
 [TODOs](#TODOs)
 
-## BASIC (#Index) (#Assembly)
+## BASIC 
+(#Index) (#Assembly)
 
 Now let's start and go back to your good old BASIC days and type the following code on WinAPE. If you are new to CPC world, welcome aboard!
 
