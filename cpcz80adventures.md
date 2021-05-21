@@ -41,6 +41,8 @@ These are some of resources I used to on my way to write this.
 
 [RSX](#RSX)
 
+[ROM](#Rom)
+
 [TODOs](#TODOs)
 
 ## BASIC 
@@ -557,7 +559,7 @@ ret
 ```
 
 ## RSX
-[Up](#Index) [Previous](#Jumpblock)
+[Up](#Index) [Previous](#Jumpblock) [Next](#Rom)
 
 We already know about BASIC, asm and jumpblocks where we bypassed TXT OUTPUT. Let's dive even deeper and explore RSX.
 
@@ -670,6 +672,7 @@ For a more detailed information and to know all the insights check the following
 
 
 ## ROMs
+[Up](#Index) [Previous](#RSX)
 
 And after doing our first RSX it is time to go for ROMs. In particular we will explore Foreground Roms that contain one or more programs. The on-board BASIC is the default foreground program.
 
