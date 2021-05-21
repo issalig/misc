@@ -223,7 +223,7 @@ main:
 
 printString:
         ld      a,(hl)          ; load char index stored in HL into A
-        cp      a               ; if 0 (last char) then Z flag will be set
+        cp      0               ; if 0 (last char) then Z flag will be set
         ret     z               ; returns if Z flag is set
         inc     hl              ; hl=hl+1
         call    TXT_OUTPUT      ; call TXT_OUTPUT
@@ -233,9 +233,11 @@ message:
         defb    "Hello World!",0 ; String is ended with 0 and prinString will stop on 0
 ```
 
+**TODO** fix bytecode for cp 0, there was a mistake with cp a
+
 It is always safe to put defb after code (especially ret or jump), so this data will not be executed.
 
-We can also use "or a" instead of "cp a" which is faster faster we are not in a hurry this time.
+We can also use "or a" instead of "cp 0" which is faster faster we are not in a hurry this time. But remember, first make it work, then make it fast and beware of the optimisation bugs included.
 
 Once you have taken a look to the asm code, let's put it into WinAPE (Assembler->Show assembler), copypaste it and then assemble it (Ctrl+F9). If all was correct it should give 0 errors.
 
@@ -254,7 +256,7 @@ WinAPE Z80 Assembler V1.0.13
 000010  1206  C9                    ret
 000012  1207                printString
 000013  1207  7E                    ld      a,(hl)          ; load char index stored in HL into A
-000014  1208  BF                    cp      a               ; if 0 then Z flag will be set
+000014  1208  BF                    cp      0               ; if 0 then Z flag will be set
 000015  1209  C8                    ret     z               ; returns if Z flag is set
 000016  120A  23                    inc     hl              ; hl=hl+1
 000017  120B  CD 5A BB              call    TXT_OUTPUT      ; call TXT_OUTPUT
@@ -553,6 +555,12 @@ To be continued.
 
 ## ROMs
 
+ROM selection: When the upper ROM is enabled, data from C000-FFF is fetched from the ROM. The same occurs to lower ROM at 0000-3FFF. 
+
+Expansion ROMS are supported by switching the upper ROM area between ROMS. Expansion ROMS are addressed by a ROM select address byte in the range 0..251.
+
+When the machine is first turned on it selects ROM zero. This will usually select onboard ROM but an expansion ROM may be fitted at this address and pre-empt the on-board ROM.
+
 Roms can be Foreground of Background. Foreground are in overall control, while background might provide additional facilities in response to a call from the current foreground program but would not be able to run a complete program on its own.
 
 A resident system extension (RSX) is similar in use to a background ROM, but it must be loaded into RAM before it can be used.
@@ -564,19 +572,55 @@ In the CPC 464 it is possible to have up to seven background ROMs and 16 in the 
 
 
 
-A given ROM will take addresses C000 to FFFF and maybe up to 16K. The first six bytes will be the following:
+A given ROM will take addresses C000 to FFFF and maybe up to 16K. The first four bytes will be the following:
 - ROM type: 0 for foreground, 1 for background, 2 for extension (onboard ROM is type &80)
 - ROM Mark number
 - ROM Version number
 - ROM Modification level
-- Address of external command table (2 bytes)
 
-Then there will be a jumplock beginning with the entry to the initialisation routing and then jumps that match the external command words. The last byte of these words will have the bit 7 set to 1 (&80).
+Then there will be a jumplock (sequence of JP instructions) beginning with the entry to the initialisation routine and then jumps that match the external command words. The last byte of these words will have the bit 7 set to 1 (value+&80).
 
-- Address of command name table
+- Address of command name table (2bytes)
 - Jumpblock entry 0
 - Jumpblock entry 1
 - ...
+- Name of command for entry 0
+- Name of command for entry 1
+- ...
+- 0 to specify end of name table
+
+Let's see how would it be the code
+
+```asm
+ORG   #C000		;Start of ROM
+
+			;Header			
+DEFB 1			;Background ROM
+DEFB 0			;Mark 0
+DEFB 5			;Version 5
+DEFB 0			;Modification 0
+DEFW NAME_TABLE		;Address of name table
+
+			;Jumpblock
+JP EMS_ENTRY		;0 Background ROM power-up entry
+JP HELLO		;1
+JP BYE;			;2
+
+NAME_TABLE:             ;Name table ending with 0
+DEFB 'MY RO','M'+#80	;0  With the space it cannot be called from BASIC
+DEFB 'HELL','O'+#80	;1
+DEFB 'BY','E'+#80	;2
+DEFB 0			;End of table marker
+```
+
+Each of the entries to the foreground ROM represents a separate program. The first entry
+
+idea for code function with info on memory pool with  BC,DE;HL registers
+
+KL ROM WALK looks for background roms and initialises any that finds. (calls 1st entry??)
+
+KL INIT BACK initializes a particular background ROM
+
 
 
 
@@ -585,7 +629,9 @@ KL FIND COMMAND
 References:
 [968] Soft968, Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs http://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
 [INS] The Ins and Outs of the AMSTRAD CPC464 https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
+https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interface-(new-to-cpc)/100/
 
+Memory 8entry points) https://www.grimware.org/doku.php/documentations/firmware/guide/memory
 
 ## RSX
 
