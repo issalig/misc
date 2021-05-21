@@ -1,7 +1,8 @@
 # CPC Basic and Z80 adventures 
 
+## Introduction
 This is the documentation of my journey into learning Z80 assembly. I typed small BASIC programs back in the day and now I am spicing up with Z80 wizardry.
-This is **NOT** a tutorial on Z80, just a quick start guide to mess around Z80 and CPC.
+This is **NOT** a tutorial on Z80 neither a full-detailed guide, it is a practical guide to mess around Z80 and CPC. I wish I had found a document like this but it looks that did not exist, thus I am sharing it for you not to reinvent the wheel again.
 
 I have used Linux but on Windows you can also do it.
 I will use WinAPE http://www.winape.net/downloads.jsp running under linux with WINE (sudo apt install wine).
