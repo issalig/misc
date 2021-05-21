@@ -37,6 +37,8 @@ These are some of resources I used to on my way to write this.
 
 [Jumpblock](#Jumpblock)
 
+[RSX](#RSX)
+
 [TODOs](#TODOs)
 
 ## BASIC 
