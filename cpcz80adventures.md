@@ -39,7 +39,7 @@ These are some of resources I used to on my way to write this.
 [TODOs](#TODOs)
 
 ## BASIC 
-<div align="right"> [Up](#CPC-Basic-and-Z80-adventures) [Previous](#Index) [Next](#Assembly) </div>
+[Up](#CPC-Basic-and-Z80-adventures) [Previous](#Index) [Next](#Assembly)
 
 Now let's start and go back to your good old BASIC days and type the following code on WinAPE. If you are new to CPC world, welcome aboard!
 
@@ -134,6 +134,7 @@ bf                             ; bf is PRINT code
 
 
 ## Assembly
+[Up](#CPC-Basic-and-Z80-adventures) [Previous](#BASIC) [Next](#Mixing-asm-and-BASIC)
 
 
 And now that we know some things about BASIC, and even we got down to the internal representation of a BASIC program, we are gonna play like the BIG boys, we are gonna play with **Z80 assembly**.
@@ -356,6 +357,9 @@ We have already used memory address &1200 which is in the area of BASIC (0170-HI
 | 003F-0000 RST routines |  |  |
 
 ## Mixing asm and BASIC
+[Up](#CPC-Basic-and-Z80-adventures) [Previous](#Assembly) [Next](#RSX)
+
+
 
 Now we know a little bit of assembly and we have also seen how a BASIC code is stored in memory.
 
