@@ -19,6 +19,8 @@ For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol n
 These are some of resources I used to on my way to write this.
 - CPCWiki, a helpful community https://www.cpcwiki.eu/forum/programming/
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
+- Soft968 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi-xZLv19vwAhVN6RoKHS7FCbUQFjADegQIBRAD&url=https%3A%2F%2Farchive.org%2Fdetails%2FSOFT968TheAmstrad6128FirmwareManual&usg=AOvVaw12KS9H17GJDUZOyw9teD3s
+- Soft968 Incomplete https://www.cpcwiki.eu/index.php/Soft968:_CPC_464/664/6128_Firmware
 - Firmware http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
 - A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
 - Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
@@ -667,14 +669,11 @@ For a more detailed information and to know all the insights check the following
 [EXA] RSX example https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX
 
 
-
-**WARNING: THIS AREA IS STILL A DRAFT*
-
 ## ROMs
 
 And after doing our first RSX it is time to go for ROMs. In particular we will explore Foreground Roms that contain one or more programs. The on-board BASIC is the default foreground program.
 
-The structuture is similar to an RSX but we will need an initalization routine. Upper ROM are located at C000
+The structuture is similar to an RSX but we will need an initalization routine. Upper ROM are located at C000.
 
 The first four bytes will be the following:
 - ROM type: 0 for foreground, 1 for background, 2 for extension (onboard ROM is type &80)
@@ -682,7 +681,7 @@ The first four bytes will be the following:
 - ROM Version number
 - ROM Modification level
 
-Then there will be a jumplock (sequence of JP instructions) beginning with the entry to the initialisation routine and then jumps that match the external command words. The last byte of these words will have the bit 7 set to 1 (value+&80).
+After, there will be a jumplock (sequence of JP instructions) beginning with the entry to the initialisation routine and then jumps that match the external command words. Finally the name table with a list of commands where the last byte of these command names will have the bit 7 set to 1 (value+&80) being 0 the last command.
 
 - Address of command name table (2bytes)
 - Jumpblock entry 0
@@ -693,83 +692,32 @@ Then there will be a jumplock (sequence of JP instructions) beginning with the e
 - ...
 - 0 to specify end of name table
 
-BLAH BLAH
-
-The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM  (see  section  10.2).  
-The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routine.
-
-
-ROM selection: When the upper ROM is enabled, data from C000-FFF is fetched from the ROM. The same occurs to lower ROM at 0000-3FFF. 
-
-Expansion ROMS are supported by switching the upper ROM area between ROMS. Expansion ROMS are addressed by a ROM select address byte in the range 0..251.
-
-When the machine is first turned on it selects ROM zero. This will usually select onboard ROM but an expansion ROM may be fitted at this address and pre-empt the on-board ROM.
-
-Roms can be Foreground of Background. Foreground are in overall control, while background might provide additional facilities in response to a call from the current foreground program but would not be able to run a complete program on its own.
-
-A resident system extension (RSX) is similar in use to a background ROM, but it must be loaded into RAM before it can be used.
-
-A foreground ROM contains one or more programs. The on-board BASIC is the default foreground program.
-
-
-In the CPC 464 it is possible to have up to seven background ROMs and 16 in the CPC 6128 that will have reference numbers in the range 0 to 251. ROM numbers must be consecutive from 0 or 1 upwards. In the case that reference 0 is used, the on.board ROM will be available at the first reference number not used by external ROMs. A foreground program may use up to **four** ROMs.
-
-
-
-Let's see how would it be the code
-
-```asm
-ORG   #C000		;Start of ROM
-
-			;Header			
-DEFB 1			;Background ROM
-DEFB 0			;Mark 0
-DEFB 5			;Version 5
-DEFB 0			;Modification 0
-DEFW NAME_TABLE		;Address of name table
-
-			;Jumpblock
-JP EMS_ENTRY		;0 Background ROM power-up entry
-JP HELLO		;1
-JP BYE;			;2
-
-NAME_TABLE:             ;Name table ending with 0
-DEFB 'MY RO','M'+#80	;0  With the space it cannot be called from BASIC
-DEFB 'HELL','O'+#80	;1
-DEFB 'BY','E'+#80	;2
-DEFB 0			;End of table marker
-```
-
-Each of the entries to the foreground ROM represents a separate program. The first entry
-
-idea for code function with info on memory pool with  BC,DE;HL registers
-
-KL ROM WALK looks for background roms and initialises any that finds. (calls 1st entry??)
-
-KL INIT BACK initializes a particular background ROM
-
-KL FIND COMMAND 
-
+In constrast to RSX the first entry of the jumpblock is called automatically by the kernel.
 
 And the code for a Hello World foreground ROM will be this:
 ```asm
 TXT_OUTPUT      equ &bb5a 
-ORG #C000
+ORG #C000       ; Start of ROM
 write "HELLO.ROM"
 
-	; ROM header
-	db #01, #00, #00, #05
+	; ROM header			
+	defb 1			;Background ROM
+	defb 0			;Mark 0
+	defb 5			;Version 5
+	defb 0			;Modification 0
+	defw NAME_TABLE		;Address of name table
+
 
 RSXTable:
 	defw RSXNames  ;define word because address takes 2 bytes
-	jp Bootup
-	jp rsx_hello
-	jp rsx_bye
+	jp Bootup      ; power-up entry
+	jp rsx_hello   ; function 1
+	jp rsx_bye     ; function 2
 
 
 RSXNames:
 	defb "HELLO INI","T"+&80 ; Putting a blank makes it imposible to call from BASIC, if we want that
-                defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
+        defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
 	defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
 
 	db 0                     ;end of name table marker
@@ -824,10 +772,48 @@ If all was ok we will see the sentence Hello World from ROM! before the Ready me
 
 If we want to check what is doing we can go to WinAPE Debugger and select Memory->Any Rom->UpperROM and select slot 5.
 
+For more and complete information check the following references.
 
 References:
 [968] Soft968, Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs http://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
 [INS] The Ins and Outs of the AMSTRAD CPC464 https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
 https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interface-(new-to-cpc)/100/
 
-Memory 8entry points) https://www.grimware.org/doku.php/documentations/firmware/guide/memory
+
+
+# DRAFT AREA
+
+
+Let's see how would it be the code
+
+```asm
+ORG   #C000		;Start of ROM
+
+			;Header			
+DEFB 1			;Background ROM
+DEFB 0			;Mark 0
+DEFB 5			;Version 5
+DEFB 0			;Modification 0
+DEFW NAME_TABLE		;Address of name table
+
+			;Jumpblock
+JP EMS_ENTRY		;0 Background ROM power-up entry
+JP HELLO		;1
+JP BYE;			;2
+
+NAME_TABLE:             ;Name table ending with 0
+DEFB 'MY RO','M'+#80	;0  With the space it cannot be called from BASIC
+DEFB 'HELL','O'+#80	;1
+DEFB 'BY','E'+#80	;2
+DEFB 0			;End of table marker
+```
+
+Each of the entries to the foreground ROM represents a separate program. The first entry
+
+idea for code function with info on memory pool with  BC,DE;HL registers
+
+KL ROM WALK looks for background roms and initialises any that finds. (calls 1st entry??)
+
+KL INIT BACK initializes a particular background ROM
+
+KL FIND COMMAND 
