@@ -549,16 +549,127 @@ defb &cf,&fe,&93 ; call original jumpblock for TXT OUTPUT
 ret
 ```
 
+## RSX
 
-## TODOs
-Things I want to include soon: RSX calls, ROMs (a good example is https://github.com/llopis/amstrad-diagnostics), USIFAC programming, etc, ...
+We already know about BASIC, asm and jumpblocks where we bypassed TXT OUTPUT. Let's dive even deeper and explore RSX.
 
-To be continued.
+RSX commands are preceded by the pipe "|" symbol and are a way to extend BASIC commands. Probably you know |TAPE and |DISC an even |BASIC but now we have the opportunity to implement our own RSX.
+
+RSX structure is the following:
+ - Installation routine which calls KL LOG EXT
+ - 4 empty bytes for kernel workspace
+ - Jumblock address
+ 	- Jumpblock
+ - Command names. Last byte of each string has bit7 = 1. Last command is the end of table marker **0**
+ - Code for commands 
+ 
+In the installation routine we register our commands by calling KL LOG EXT with the address of the jump table in register BC and, the address of 4 bytes space in HL.  
+ 
+We will take the example at  https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX to write our Hello World RSX edition, ouyeah!
+
+
+```asm
+; RSX Hello World
+
+.kl_log_ext equ &bcd1
+
+;; this can be any address in the range &0040-&a7ff.
+org &8000
+
+;;-------------------------------------------------------------------------------
+;; install RSX
+
+ld hl, work_space		;;address of a 4 byte workspace useable by Kernel
+ld bc, jump_table		;;address of command name table and routine handlers
+jp kl_log_ext		        ;;Install RSX's
+
+.work_space                ;Space for kernel to use
+defs 4
+;;-------------------------------------------------------------------------------
+;; RSX definition
+
+.jump_table
+defw name_table            ;address pointing to RSX commands 
+
+                           ;list of jump commands associated with each command
+                           
+                           ;The name (in the name_table) and jump instruction
+                           ;(in the jump_table), must be in the same
+                           ;order.
+
+                           ;i.e. the first name in the name_table refers to the
+                           ;first jump in the jump_table, and vice versa.
+
+jp rsx_hello           ;routine for COMMAND1 RSX
+jp rsx_bye           ;routine for COMMAND2 RSX
+
+
+;; the table of RSX function names
+;; the names must be in capitals.
+
+.name_table
+defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
+defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
+                      ;as you see +&80 does the trick
+
+defb 0                     ;end of name table marker
+
+; Code for the example RSXs
+
+.rsx_hello                           ; we use a point at the beginning instead of colon at end
+        ld      hl,hello_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+.rsx_bye
+        ld      hl,bye_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+
+        TXT_OUTPUT      equ &bb5a
+
+printString:
+        ld      a,(hl)          ; load char pointed by HL into A
+        cp      0               ; if 0 then Z flag will be set
+        ret     z               ; returns if Z flag is set
+        inc     hl              ; increase pointer
+        call    TXT_OUTPUT      ; call TXT_OUTPUT
+        jr      printString
+
+
+hello_message:
+defb "Hello World from RSX!",0
+
+bye_message:
+defb "See you soon!",0
+```
+
+If everything was ok we will see this text:
+```basic
+|HELLO
+Hello World from RSX!
+Ready
+|BYE
+See you soon!
+Ready
+```
+
+### References
+For a more detailed information and to know all the insights check the following references.
+[968] Soft968 Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs https://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
+[EXA] RSX example https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX
+
+
 
 **WARNING: THIS AREA IS STILL A DRAFT*
 
-
 ## ROMs
+
+
+The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM  (see  section  10.2).  
+The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routine.
+
 
 ROM selection: When the upper ROM is enabled, data from C000-FFF is fetched from the ROM. The same occurs to lower ROM at 0000-3FFF. 
 
@@ -631,7 +742,7 @@ KL FIND COMMAND
 
 And the code for a Hello World foreground ROM will be this:
 ```asm
-XT_OUTPUT      equ &bb5a 
+TXT_OUTPUT      equ &bb5a 
 ORG #C000
 write "HELLO.ROM"
 
@@ -639,13 +750,14 @@ write "HELLO.ROM"
 	db #01, #00, #00, #05
 
 RSXTable:
-	defw RSXNames
+	defw RSXNames  ;define word because address takes 2 bytes
 	jp Bootup
 	jp rsx_hello
 	jp rsx_bye
 
 
 RSXNames:
+	defb "HELLO INI","T"+&80 ; Putting a blank makes it imposible to call from BASIC, if we want that
                 defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
 	defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
 
@@ -687,7 +799,7 @@ rsx_bye:
 ret
 
 boot_message:
-	defb "Hello World ROM",13,10,13,10,0
+	defb " Hello World from ROM!",13,10,13,10,0
 
 hello_message:
 	defb "Hello World from RSX!",0
@@ -708,100 +820,3 @@ References:
 https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interface-(new-to-cpc)/100/
 
 Memory 8entry points) https://www.grimware.org/doku.php/documentations/firmware/guide/memory
-
-## RSX
-
-10 Expansion ROMs, Resident System Extensions and RAM Programs
-https://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
-https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX
-
-An RSX is similar to a background ROM. Responsibility for loading an RSX and providing it  with  memory  lies  with  the  foreground  program. 
-
-To  fit  in  with  the  dynamic  allocation  of  memory to background ROMs it is recommended that RSXs should be position independent or  relocated  when  loaded.  An  RSX  could  be  relocated  by  writing  a  short  BASIC  'loader' program  which  reads  the  RSX  in  a  format  which  may  be  relocated  easily  and  POKEs  into  store.
-
-Once an RSX is load it may be placed on the list of possible handlers of external commands (see  following  page)  by  calling  KL  LOG  EXT,  passing  it  the  address  of the RSXs external command  table  and  a  four  byte  block  of  memory  (in  the  central  32K  of  RAM)  for  the  Kernel's  use.  
-
-The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM  (see  section  10.2).  
-The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routin
-
-In the following page 8https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX)  there is an example to define a RSX.
-
-We will be using our Hello World routine
-
-```asm
-; RSX Hello World
-
-.kl_log_ext equ &bcd1
-
-;; this can be any address in the range &0040-&a7ff.
-org &8000
-
-;;-------------------------------------------------------------------------------
-;; install RSX
-
-ld hl, work_space		;;address of a 4 byte workspace useable by Kernel
-ld bc, jump_table		;;address of command name table and routine handlers
-jp kl_log_ext		;;Install RSX's
-
-.work_space                ;Space for kernel to use
-defs 4
-;;-------------------------------------------------------------------------------
-;; RSX definition
-
-.jump_table
-defw name_table            ;address pointing to RSX commands 
-
-                           ;list of jump commands associated with each command
-                           
-                           ;The name (in the name_table) and jump instruction
-                           ;(in the jump_table), must be in the same
-                           ;order.
-
-                           ;i.e. the first name in the name_table refers to the
-                           ;first jump in the jump_table, and vice versa.
-
-jp rsx_hello           ;routine for COMMAND1 RSX
-jp rsx_bye           ;routine for COMMAND2 RSX
-
-
-;; the table of RSX function names
-;; the names must be in capitals.
-
-.name_table
-defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
-defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
-
-defb 0                     ;end of name table marker
-
-; Code for the example RSXs
-
-.rsx_hello                           ; we use a point at the beginning instead of colon at end
-        ld      hl,hello_message      ; load address of string in HL
-        call    printString     ; print it        
-ret
-
-.rsx_bye
-        ld      hl,bye_message      ; load address of string in HL
-        call    printString     ; print it        
-ret
-
-
-        TXT_OUTPUT      equ &bb5a
-
-printString:
-        ld      a,(hl)          ; load char pointed by HL into A
-        cp      0               ; if 0 then Z flag will be set
-        ret     z               ; returns if Z flag is set
-        inc     hl              ; increase pointer
-        call    TXT_OUTPUT      ; call TXT_OUTPUT
-        jr      printString
-
-
-hello_message:
-defb "Hello World from RSX!",0
-
-bye_message:
-defb "Bye!",0
-```
-
-
