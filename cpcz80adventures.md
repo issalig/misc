@@ -672,6 +672,28 @@ For a more detailed information and to know all the insights check the following
 
 ## ROMs
 
+And after doing our first RSX it is time to go for ROMs. In particular we will explore Foreground Roms that contain one or more programs. The on-board BASIC is the default foreground program.
+
+The structuture is similar to an RSX but we will need an initalization routine. Upper ROM are located at C000
+
+The first four bytes will be the following:
+- ROM type: 0 for foreground, 1 for background, 2 for extension (onboard ROM is type &80)
+- ROM Mark number
+- ROM Version number
+- ROM Modification level
+
+Then there will be a jumplock (sequence of JP instructions) beginning with the entry to the initialisation routine and then jumps that match the external command words. The last byte of these words will have the bit 7 set to 1 (value+&80).
+
+- Address of command name table (2bytes)
+- Jumpblock entry 0
+- Jumpblock entry 1
+- ...
+- Name of command for entry 0
+- Name of command for entry 1
+- ...
+- 0 to specify end of name table
+
+BLAH BLAH
 
 The  format  of  the  table  is  exactly  the  same  as  for  a  background  ROM  (see  section  10.2).  
 The  only  difference  is  in  the  interpretation  of  the  table - the first entry in the jumpblock  is  not  called  automatically  by  the  Kernel  and  thus  need  not  be  the  RSX's  initialization routine.
@@ -693,23 +715,6 @@ A foreground ROM contains one or more programs. The on-board BASIC is the defaul
 In the CPC 464 it is possible to have up to seven background ROMs and 16 in the CPC 6128 that will have reference numbers in the range 0 to 251. ROM numbers must be consecutive from 0 or 1 upwards. In the case that reference 0 is used, the on.board ROM will be available at the first reference number not used by external ROMs. A foreground program may use up to **four** ROMs.
 
 
-
-A given ROM will take addresses C000 to FFFF and maybe up to 16K. The first four bytes will be the following:
-- ROM type: 0 for foreground, 1 for background, 2 for extension (onboard ROM is type &80)
-- ROM Mark number
-- ROM Version number
-- ROM Modification level
-
-Then there will be a jumplock (sequence of JP instructions) beginning with the entry to the initialisation routine and then jumps that match the external command words. The last byte of these words will have the bit 7 set to 1 (value+&80).
-
-- Address of command name table (2bytes)
-- Jumpblock entry 0
-- Jumpblock entry 1
-- ...
-- Name of command for entry 0
-- Name of command for entry 1
-- ...
-- 0 to specify end of name table
 
 Let's see how would it be the code
 
