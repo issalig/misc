@@ -1,4 +1,4 @@
-# CPC Basic and Z80 adventures
+# CPC Basic and Z80 adventures 
 
 This is the documentation of my journey into learning Z80 assembly. I typed small BASIC programs back in the day and now I am spicing up with Z80 wizardry.
 This is **NOT** a tutorial on Z80, just a quick start guide to mess around Z80 and CPC.
@@ -38,7 +38,7 @@ These are some of resources I used to on my way to write this.
 
 [TODOs](#TODOs)
 
-## BASIC
+## BASIC (#Index) (#Assembly)
 
 Now let's start and go back to your good old BASIC days and type the following code on WinAPE. If you are new to CPC world, welcome aboard!
 
