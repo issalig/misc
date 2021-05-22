@@ -775,13 +775,90 @@ If all was ok we will see the sentence Hello World from ROM! before the Ready me
 
 If we want to check what is doing we can go to WinAPE Debugger and select Memory->Any Rom->UpperROM and select slot 5.
 
+### Model ROM
+At this moment you may be tired of the Hello World example. While it is a good example to start learning I feel it is moment for more useful thing. So let's add model check capability to our ROM
+I will borrow again some code from Amstrad diagnostics, in particular the the model detection function can be found on (https://github.com/llopis/amstrad-diagnostics/blob/main/src/Model.asm) 
+
+I will not detail all the functions but I will describe the language detection. The good old known boot message is Amstrad 128K Microcomputer (v3) for a CPC6128 with English layout, thus being **v** for version in English ROM, **s** for Spanish and **f** for French. The digit **3** will be present in CPC6128, **2** for 664 and **1** for our lovely coloured CPC464.
+
+Thus the trick is to go to the address where this message resides and check it. 
+
+The system code for the boot message of CPC6128 is the following
+
+```asm
+;;======================================================================
+
+0677 210202    ld      hl,$0202
+067a cd7011    call    $1170			; TXT SET CURSOR
+
+067d cd2307    call    $0723			; get pointer to machine name (based on LK1-LK3 on PCB)
+
+0680 cdfc06    call    $06fc			; display message
+
+0683 218806    ld      hl,$0688			; "128K Microcomputer.." message
+0686 1874      jr      $06fc            ; 
+
+0688 
+defb " 128K Microcomputer  (v3)"
+defb &1f,&02,&04
+defb "Copyright"
+defb &1f,&02,&04
+defb &a4								;; copyright symbol
+defb "1985 Amstrad Consumer Electronics plc"
+defb &1f,&0c,&05
+defb "and Locomotive Software Ltd."
+defb &1f,&01,&07
+defb 0
+
+```
+In order to read the contents of the lower ROM instead of RAM we will use the following function
+
+```asm
+;; IN  - Address to read
+;; OUT - HL: Contents of address
+@ReadFromLowerROM:
+	ld 	bc, #7F00 | %10001001                        ; GA select lower rom, and mode 1
+	out 	(c),c
+	ld	l, (ix)
+	ld	h, (ix+1)
+	ld 	bc, RESTORE_ROM_CONFIG
+	out 	(c),c
+	ret
+	DEFINE RESTORE_ROM_CONFIG #7F00 + %10001001
+```	
+
+
+Following the same technique we can also report the branding name which is found at the end of system rom http://cpctech.cpc-live.com/docs/os.asm
+
+```asm
+;; start-up names
+0738 
+defb "Arnold",0							;; this name can't be chosen
+defb "Amstrad",0
+defb "Orion",0
+defb "Schneider",0
+defb "Awa",0
+defb "Solavox",0
+defb "Saisho",0
+defb "Triumph",0
+defb "Isp",0
+```
+This string will be found at
+
+### Lower Rom
+Peviously we have set one ROM on C000 (Upper ROM) that can take advantage of the lower ROM calls. But image we don't need them or maybe thy are not available because system ROM is corrupted. This is done in the Amstrad Diagnostics (https://github.com/llopis/amstrad-diagnostics/) from which I am getting inspiration and recommend you to explore.
+
+A Lower ROM will be similar to our Upper ROM but it will start at 0 and we will have to supply a minimal boot that sets RST vectors, CRTC (see https://github.com/llopis/amstrad-diagnostics/blob/main/src/HardwareInit.asm)
+
+We will also need to implement our own text routines.
+
 For more and complete information check the following references.
 
 ### References:
 [968] Soft968, Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs http://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
 [INS] The Ins and Outs of the AMSTRAD CPC464 https://acpc.me/ACME/LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
 https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interface-(new-to-cpc)/100/
-
+[DIAG] Amstrad Diagnostics https://github.com/llopis/amstrad-diagnostics/
 
 # DRAFT AREA
 
