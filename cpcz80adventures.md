@@ -669,7 +669,7 @@ Ready
 ```
 RSX admit parameters and will be 2-byte numbers or strings. Byte 0 of the string will be the length and byte 1-2 the address of the string. Register A contains the number of parameters and IX the address of parameters.
 
-In BASIC 1.0 (CPC464) parameters are passed in a variable and in BASIC 1.1 it is possible to write them directly
+In BASIC 1.0 (CPC464) parameters are passed in a variable and in BASIC 1.1 it is also possible to write them directly
 
 ```basic
 REM BASIC 1.0
@@ -678,13 +678,18 @@ a$="*.BAS":|DIR,@a$
 REM BASIC 1.1
 |DIR,"*.BAS" 
 ``` 
+
+For more info check http://www.cpcwiki.eu/index.php?title=Technical_information_about_Locomotive_BASIC&mobileaction=toggle_view_desktop#Passing_parameters_to_a_RSX_.28Resident_System_Extension.29_command_or_binary_function
+
 |REFNUM,@CHARTRING$,INDEXNUM,@REFNUM
+
+RSX return value???
 
 ### References
 For a more detailed information and to know all the insights check the following references.
 [968] Soft968 Chapter 10. Expansion ROMs, Resident System Extensions and RAM Programs https://www.cpcwiki.eu/imgs/f/f6/S968se10.pdf
 [EXA] RSX example https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX
-
+[ANA] RSX Anatomy https://cpcrulez.fr/coding_RSX-anatomy_of_an_RSX-part_1_AA.htm
 
 ## ROMs
 [Up](#Index) [Previous](#RSX)
