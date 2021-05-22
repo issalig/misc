@@ -919,7 +919,358 @@ It is also the first time here we deal with IX register and we will make use of 
 	DEFINE RESTORE_ROM_CONFIG #7F00 + %10001001
 ```
 
-Ok, this is getting longer than expected but we are not the noobs we were at the beginning of this document and we reached till here in order to select a Lower ROM and read info about brand, model and language.
+Ok, this is getting longer than expected but we are not the noobs we were at the beginning of this document and we reached till here in order to select a Lower ROM and read info about vendor, model and language.
+
+```asm
+; RSX Hello World
+
+.kl_log_ext equ &bcd1
+
+;; this can be any address in the range &0040-&a7ff.
+org &8000
+
+;;-------------------------------------------------------------------------------
+;; install RSX
+
+ld hl, work_space		;;address of a 4 byte workspace useable by Kernel
+ld bc, jump_table		;;address of command name table and routine handlers
+jp kl_log_ext		;;Install RSX's
+
+.work_space                ;Space for kernel to use
+defs 4
+;;-------------------------------------------------------------------------------
+;; RSX definition
+
+.jump_table
+	defw name_table            ;address pointing to RSX commands 
+
+                           ;list of jump commands associated with each command
+                           
+                           ;The name (in the name_table) and jump instruction
+                           ;(in the jump_table), must be in the same
+                           ;order.
+
+                           ;i.e. the first name in the name_table refers to the
+                           ;first jump in the jump_table, and vice versa.
+
+	jp rsx_hello           ;routine for COMMAND1 RSX
+	jp rsx_bye           ;routine for COMMAND2 RSX
+                jp rsx_model
+
+
+;; the table of RSX function names
+;; the names must be in capitals.
+
+.name_table
+	defb "HELL","O"+&80     ;the last letter of each RSX name must have bit 7 set to 1.
+	defb "BY","E"+&80     ;This is used by the Kernel to identify the end of the name.
+                                                 ;as you see +&80 does the trick
+	defb "MODE","L"+&80 
+	defb 0                     ;end of name table marker
+
+; Code for the example RSXs
+
+.rsx_hello                           ; we use a point at the beginning instead of colon at end
+        ld      hl,hello_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+.rsx_bye
+        ld      hl,bye_message      ; load address of string in HL
+        call    printString     ; print it        
+ret
+
+.rsx_model
+
+
+
+;in this example we will skip Plus computers
+; as homework you can include the needed code, but who cares about Plus?
+.notPlus
+	ld	ix, #0006
+	call	ReadFromLowerROM
+	ld	a, l
+	cp	#91
+	jr	nz, not6128
+	ld	a, h
+	cp	#05
+	jr	nz, not6128
+
+	;; 6128
+	ld	a, MODEL_CPC6128
+	ld	(ModelType), a
+
+	ld	ix, #069E
+	call	ReadFromLowerROM
+	;; Check that the word we read is 'x3' where x is the language. If the 3 isn't there, leave it in English
+	ld	a, h
+	cp	'3'
+	jr	nz, englishKeyboard
+	jr	checkLanguageFromVersionString
+
+
+.not6128
+	ld	ix, #0683
+	call	ReadFromLowerROM
+	ld	a, h
+
+	;; 464 or 664
+	cp	'2'
+	jr	nz, not664
+
+	;; 664
+      	ld	a, MODEL_CPC664
+	ld	(ModelType), a
+	jr	englishKeyboard
+
+	;; 464
+.not664
+	ld	ix, #0682
+	call	ReadFromLowerROM
+	ld	a, h
+	cp	'1'
+	jr	z, Is464
+
+      	ld	a, MODEL_UNKNOWNCPC
+	ld	(ModelType), a
+	jr	englishKeyboard
+
+.Is464
+      	ld	a, MODEL_CPC464
+	ld	(ModelType), a
+
+.checkLanguageFromVersionString
+	ld	a, l
+	cp	's'
+	jr	z, spanishKeyboard
+
+	ld	a, l
+	cp	'f'
+	jr	z, frenchKeyboard
+
+	jr printResults
+
+.englishKeyboard	
+	ld	a, KEYBOARD_LANGUAGE_ENGLISH
+	ld	(KeyboardLanguage), a
+	ret
+
+.spanishKeyboard
+	ld	a, KEYBOARD_LANGUAGE_SPANISH
+	ld	(KeyboardLanguage), a
+	ret
+
+.frenchKeyboard
+	ld	a, KEYBOARD_LANGUAGE_FRENCH
+	ld	(KeyboardLanguage), a
+	ret
+
+;now print the results
+
+.printResults
+ld hl, model_txt
+call printString
+
+	ld	a, (ModelType)
+	ld	e, a
+	ld	d, 0
+	ld	hl, ModelNameTableOffset
+	add	hl, de
+	ld	a, (hl)
+	ld	e, a
+	ld	hl, ModelNames
+	add	hl, de
+
+call printString
+
+ld hl,crlf
+call printString
+
+ld hl, language_txt
+call printString
+
+	ld	a, (KeyboardLanguage)
+	ld	e, a
+	ld	d, 0
+	ld	hl, LanguageTableOffset
+	add	hl, de
+	ld	a, (hl)
+	ld	e, a
+	ld	hl, KeyboardLanguages
+	add	hl, de
+
+call printString
+
+ld hl,crlf
+call printString
+ld hl, vendor_txt
+call printString
+
+
+ld 	bc, #7F00 + %10001001                        ; GA select lower rom, and mode 1
+	out 	(c),c
+
+
+;;-----------------------------------------------------------------------
+;; get a pointer to the machine name
+;; HL = machine name
+ ld      b,&f5			;; PPI port B input
+ in      a,(c)
+
+	ld 	bc, RESTORE_ROM_CONFIG
+	out 	(c),c
+
+
+ cpl     
+and     &0e				;; isolate LK1-LK3 (defines machine name on startup)
+rrca    
+;; A = machine name number
+ ld      hl,VendorNames			; table of names
+inc     a
+	ld	e, a
+	ld	d, 0
+	ld	hl, VendorTableOffset
+	add	hl, de
+	ld	a, (hl)
+	ld	e, a
+	ld	hl, VendorNames
+	add	hl, de
+
+ 	
+call printString
+
+
+
+;enable RAM
+;call &0723
+
+ld hl,crlf
+call printString
+
+
+        TXT_OUTPUT      equ &bb5a
+
+printString:
+        ld      a,(hl)          ; load char pointed by HL into A
+        or      a               ; if 0 then Z flag will be set
+        ret     z               ; returns if Z flag is set
+        inc     hl              ; increase pointer
+        call    TXT_OUTPUT      ; call TXT_OUTPUT
+        jr      printString
+
+ReadFromLowerROM:
+ 	ld 	bc, #7F00 + %10001001                        ; GA select lower rom, and mode 1
+	out 	(c),c
+	ld	l, (ix)
+	ld	h, (ix+1)
+	ld 	bc, RESTORE_ROM_CONFIG
+	out 	(c),c
+	ret
+
+ReadFromLowerRAM:
+ 	ld 	bc, #7F00 + %10000101                        ; GA select lower ram, and mode 1
+	out 	(c),c
+	ld	l, (ix)
+	ld	h, (ix+1)
+	ld 	bc, RESTORE_RAM_CONFIG
+	out 	(c),c
+	ret
+
+
+hello_message:
+defb "Hello World from RSX!",0
+
+bye_message:
+defb "Bye!",0
+
+crlf:
+defb 10,13,0
+
+model_txt:
+defb "Model:",0
+
+language_txt:
+defb "Language:",0
+
+vendor_txt:
+defb "Vendor:",0
+
+
+ModelType: db 0
+KeyboardLanguage: db 0
+Vendor: db 0
+
+
+ModelNames:
+TxtUnknown: db "UNKNOWN CPC", 0
+TxtModelCPC464: db "CPC 464", 0 
+TxtModelCPC664: db "CPC 664", 0 
+TxtModelCPC6128: db "CPC 6128", 0 
+
+ModelNameTableOffset:
+	defb 0
+	defb TxtModelCPC464 - TxtUnknown
+	defb TxtModelCPC664 - TxtUnknown
+	defb TxtModelCPC6128 - TxtUnknown
+
+MODEL_UNKNOWNCPC	EQU 0
+MODEL_CPC464 		EQU 1
+MODEL_CPC664 		EQU 2
+MODEL_CPC6128 		EQU 3
+
+
+KeyboardLanguages:
+TxtEnglish: defb "English",0
+TxtSpanish: defb "Spanish",0
+TxtFrench: defb "French",0
+
+LanguageTableOffset:
+	defb 0
+	;defb TxtEnglish - TxtUnknown
+	defb TxtSpanish - TxtEnglish
+	defb TxtFrench - TxtEnglish
+
+
+KEYBOARD_LANGUAGE_ENGLISH EQU 0
+KEYBOARD_LANGUAGE_SPANISH EQU 1
+KEYBOARD_LANGUAGE_FRENCH EQU 2
+
+VendorNames:
+TxtArnold defb "Arnold",0							;; this name can't be chosen
+TxtAmstrad defb "Amstrad",0
+TxtOrion defb "Orion",0
+TxtSchneider defb "Schneider",0
+TxtAwa defb "Awa",0
+TxtSolavox defb "Solavox",0
+TxtSaisho defb "Saisho",0
+TxtTriumph defb "Triumph",0
+TxtIsp defb "Isp",0
+
+VendorTableOffset:
+defb 0 
+defb TxtAmstrad-TxtArnold
+defb TxtOrion-TxtArnold
+defb TxtSchneider-TxtArnold
+defb TxtAwa-TxtArnold
+defb TxtSolavox-TxtArnold
+defb TxtSaisho-TxtArnold
+defb TxtTriumph-TxtArnold
+defb TxtIsp-TxtArnold
+
+VENDOR_ARNOLD EQU 0
+VENDOR_AMSTRAD EQU 1
+VENDOR_ORION EQU 2
+VENDOR_SCHNEIDER EQU 3
+VENDOR_AWA EQU 4
+VENDOR_SOLAVOX EQU 5
+VENDOR_SAISHO EQU 6
+VENDOR_TRIUMPH EQU 7
+VENDOR_ISP EQU 8
+
+
+RESTORE_ROM_CONFIG EQU #7F00 + %10001001
+RESTORE_RAM_CONFIG EQU #7F00 + %10000101
+```
 
 
 
