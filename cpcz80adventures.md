@@ -171,6 +171,8 @@ There are more registers but for now is enough.
 
 - **HL** The general 16 bit register, it's used pretty much everywhere you use 16 bit registers. It's most common uses are for 16 bit arithmetic and storing the addresses of stuff (strings, pictures, labels, etc.). Note that HL usually holds the original address while DE holds the destination address.
 
+- **IX** Similar to HL but is slower. IX is commonly used as a pointer in instructions LD (IY+d),r LD r,(IY+d) with d from -128 to 27
+
 - **SP** This is the stack pointer where CALL and PUSH store their values.
 
 - **F** Flag register comes in the pair AF. It will be used mainly in conditional operations. Bit 7 is SF sign flag (<0 S=1), bit 6 is ZF zero flag and bit 0 is CF carry flag.
@@ -856,6 +858,8 @@ So we have located all the memory positions we need to explore but this time we 
 So we just write, setting register 2 with Lower Rom enabled and mode 1 is done by 10001001.
 
 We said a long time ago that registers come in pairs, B and C are part of BC. It is worth to mention that IN(C),r and OUT (C),r instructions use the 8 top bits (say B) for I/O address and the 8 bottom bits (say C) as value. Thus in the example below we load the value #7F00 | %10001001 or #7F89 into BC and the write in the gate array with OUT (C),C. (Remember this, because we will use it later.)
+
+It is also the first time here we see IX register and 
 
 ```asm
 ;  Code from amstrad diagnotics
