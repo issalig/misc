@@ -19,9 +19,9 @@ For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol n
 These are some of resources I used to on my way to write this.
 - CPCWiki, a helpful community https://www.cpcwiki.eu/forum/programming/
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
-- Soft968 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi-xZLv19vwAhVN6RoKHS7FCbUQFjADegQIBRAD&url=https%3A%2F%2Farchive.org%2Fdetails%2FSOFT968TheAmstrad6128FirmwareManual&usg=AOvVaw12KS9H17GJDUZOyw9teD3s
-- Soft968 Incomplete https://www.cpcwiki.eu/index.php/Soft968:_CPC_464/664/6128_Firmware
-- Firmware http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
+- Soft968 (incomplete) https://www.cpcwiki.eu/index.php/Soft968:_CPC_464/664/6128_Firmware
+- Soft968 (full) https://archive.org/details/SOFT968TheAmstrad6128FirmwareManual
+- Firmware guide http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
 - A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
 - Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
 - CPC6128 operating system ROM http://www.cpctech.org.uk/docs/os.asm
@@ -776,14 +776,13 @@ If all was ok we will see the sentence Hello World from ROM! before the Ready me
 If we want to check what is doing we can go to WinAPE Debugger and select Memory->Any Rom->UpperROM and select slot 5.
 
 ### Model ROM
-At this moment you may be tired of the Hello World example. While it is a good example to start learning I feel it is moment for more useful thing. So let's add model check capability to our ROM
+At this moment you may be tired of the Hello World example. While it is a good example to start learning I feel it is moment for including more advanced things. So let's add model check capability to our ROM
 I will borrow again some code from Amstrad diagnostics, in particular the the model detection function can be found on (https://github.com/llopis/amstrad-diagnostics/blob/main/src/Model.asm) 
 
-I will not detail all the functions but I will describe the language detection. The good old known boot message is Amstrad 128K Microcomputer (v3) for a CPC6128 with English layout, thus being **v** for version in English ROM, **s** for Spanish and **f** for French. The digit **3** will be present in CPC6128, **2** for 664 and **1** for our lovely coloured CPC464.
+The language detection is done by analizing the good old known boot message that for and English CPC 6128 is *Amstrad 128K Microcomputer (v3)*, being **v** for version in English ROM, **s** for Spanish and **f** for French. The model can be detected by checking the digit next to the language letter and is expeected to be **1** for our lovely colored-keys CPC 464, **2** for 664 and **3** for CPC6128.
 
-Thus the trick is to go to the address where this message resides and check it. 
-
-The system code for the boot message of CPC6128 is the following
+And now the trick is to go to the address where this message resides and check it and according to http://cpctech.cpc-live.com/docs/os.asm or even inspecting the ROM with WinAPE Debugger Memory->Any Rom->Lower and look for "Microcomputer" or just a simple hexviewer. Thus, layout letter is found at &069e and model is the next byte at &069f.
+Machine name can be get by inspecting LK1-LK3 internal switches and code is found at &0723
 
 ```asm
 ;;======================================================================
@@ -809,14 +808,60 @@ defb &1f,&0c,&05
 defb "and Locomotive Software Ltd."
 defb &1f,&01,&07
 defb 0
+;...
+
+;;-----------------------------------------------------------------------
+;; get a pointer to the machine name
+;; HL = machine name
+0723 06f5      ld      b,$f5			;; PPI port B input
+0725 ed78      in      a,(c)
+0727 2f        cpl     
+0728 e60e      and     $0e				;; isolate LK1-LK3 (defines machine name on startup)
+072a 0f        rrca    
+;; A = machine name number
+072b 213807    ld      hl,$0738			; table of names
+072e 3c        inc     a
+072f 47        ld      b,a
+
+;; B = index of string wanted
+
+;; keep getting bytes until end of string marker (0) is found
+;; decrement string count and continue until we have got string
+;; wanted
+0730 7e        ld      a,(hl)			; get byte
+0731 23        inc     hl
+0732 b7        or      a				; end of string?
+0733 20fb      jr      nz,$0730         ; 
+
+0735 10f9      djnz    $0730            ; (-$07)
+0737 c9        ret   
+
+;...
+
+;; start-up names
+0738 
+defb "Arnold",0							;; this name can't be chosen
+defb "Amstrad",0
+defb "Orion",0
+defb "Schneider",0
+defb "Awa",0
+defb "Solavox",0
+defb "Saisho",0
+defb "Triumph",0
+defb "Isp",0
 
 ```
-In order to read the contents of the lower ROM instead of RAM we will use the following function that sets the gate array at address &7F00.
-bits7-5 is the register bit4-0 is the value. So we will set register 100 (RMR) that controls lower/upper ROM paging with value 01001.
 
+So we have located all the memory positions we need to explore but this time we want to read ROM instead of RAM, interesting and for that we will access the Gate Array at address &7F00. The Gate Array is a special chip that manages screen, interrupt and memory which is our now interest. Bits 7-5 select the register and bits 4-0 set the value. In this occasion we will set bits 7-6 to 10 (Register 2) that controls ROM configuration and screen mode with negated bit 3 to enable Upper ROM, negated bit 2 to enable Lower ROM and bits 2-1 for mode. 
+So we just write, setting register 2 with Lower Rom enabled and mode 1 is done by 10001001.
+
+I have condensed the explanation as much as I could but if you want to fully discover the Gate-Array
 
 TODO: explain memory paging
 http://wilco2009.blogspot.com/2015/
+https://www.cpcwiki.eu/index.php/Gate_Array
+http://www.cpcwiki.eu/imgs/c/cc/S968ap11.pdf
+
 
 ```asm
 ;; IN  - Address to read
@@ -831,24 +876,6 @@ http://wilco2009.blogspot.com/2015/
 	ret
 	DEFINE RESTORE_ROM_CONFIG #7F00 + %10001001
 ```	
-
-
-Following the same technique we can also report the branding name which is found at the end of system rom http://cpctech.cpc-live.com/docs/os.asm
-
-```asm
-;; start-up names
-0738 
-defb "Arnold",0							;; this name can't be chosen
-defb "Amstrad",0
-defb "Orion",0
-defb "Schneider",0
-defb "Awa",0
-defb "Solavox",0
-defb "Saisho",0
-defb "Triumph",0
-defb "Isp",0
-```
-This string will be found at
 
 ### Lower Rom
 Peviously we have set one ROM on C000 (Upper ROM) that can take advantage of the lower ROM calls. But image we don't need them or maybe thy are not available because system ROM is corrupted. This is done in the Amstrad Diagnostics (https://github.com/llopis/amstrad-diagnostics/) from which I am getting inspiration and recommend you to explore.
