@@ -18,6 +18,7 @@ For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol n
 
 These are some of resources I used to on my way to write this.
 - CPCWiki, a helpful community https://www.cpcwiki.eu/forum/programming/
+- Locomotive BASIC https://www.cpcwiki.eu/index.php/Locomotive_BASIC
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
 - Soft968 (incomplete) https://www.cpcwiki.eu/index.php/Soft968:_CPC_464/664/6128_Firmware
 - Soft968 (full) https://archive.org/details/SOFT968TheAmstrad6128FirmwareManual
@@ -666,6 +667,18 @@ Ready
 See you soon!
 Ready
 ```
+RSX admit parameters and will be 2-byte numbers or strings. Byte 0 of the string will be the length and byte 1-2 the address of the string. Register A contains the number of parameters and IX the address of parameters.
+
+In BASIC 1.0 (CPC464) parameters are passed in a variable and in BASIC 1.1 it is possible to write them directly
+
+```basic
+REM BASIC 1.0
+a$="*.BAS":|DIR,@a$
+
+REM BASIC 1.1
+|DIR,"*.BAS" 
+``` 
+|REFNUM,@CHARTRING$,INDEXNUM,@REFNUM
 
 ### References
 For a more detailed information and to know all the insights check the following references.
@@ -783,6 +796,8 @@ I will borrow again some code from Amstrad diagnostics, in particular the the mo
 
 The language detection is done by analizing the good old known boot message that for and English CPC 6128 is *Amstrad 128K Microcomputer (v3)*, being **v** for version in English ROM, **s** for Spanish and **f** for French. The model can be detected by checking the digit next to the language letter and is expeected to be **1** for our lovely colored-keys CPC 464, **2** for 664 and **3** for CPC6128.
 
+Other differences in ROMs are found at byte &0006. CPC6128 has &0591, CPC 664 &7B05 and CPC464 &0580
+
 And now the trick is to go to the address where this message resides and check it and according to http://cpctech.cpc-live.com/docs/os.asm or even inspecting the ROM with WinAPE Debugger Memory->Any Rom->Lower and look for "Microcomputer" or just a simple hexviewer. Thus, layout letter is found at &069e and model is the next byte at &069f.
 Machine name can be get by inspecting LK1-LK3 internal switches and code is found at &0723
 
@@ -859,10 +874,10 @@ So we just write, setting register 2 with Lower Rom enabled and mode 1 is done b
 
 We said a long time ago that registers come in pairs, B and C are part of BC. It is worth to mention that IN(C),r and OUT (C),r instructions use the 8 top bits (say B) for I/O address and the 8 bottom bits (say C) as value. Thus in the example below we load the value #7F00 | %10001001 or #7F89 into BC and the write in the gate array with OUT (C),C. (Remember this, because we will use it later.)
 
-It is also the first time here we see IX register and 
+It is also the first time here we deal with IX register and we will make use of their pointer facilities to load 2 bytes into HL starting at IX address.
 
 ```asm
-;  Code from amstrad diagnotics
+;  Code from github.com/llopis/amstrad-diagnostics
 
 ;; IN  - Address to read
 ;; OUT - HL: Contents of address
