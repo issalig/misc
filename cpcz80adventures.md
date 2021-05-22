@@ -20,6 +20,7 @@ These are some of resources I used to on my way to write this.
 - CPCWiki, a helpful community https://www.cpcwiki.eu/forum/programming/
 - Locomotive BASIC https://www.cpcwiki.eu/index.php/Locomotive_BASIC
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
+- Z80 Assembly programming for the Amstrad CPC https://www.chibiakumas.com/z80/AmstradCPC.php
 - Soft968 (incomplete) https://www.cpcwiki.eu/index.php/Soft968:_CPC_464/664/6128_Firmware
 - Soft968 (full) https://archive.org/details/SOFT968TheAmstrad6128FirmwareManual
 - Firmware guide http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
@@ -681,9 +682,10 @@ REM BASIC 1.1
 
 For more info check http://www.cpcwiki.eu/index.php?title=Technical_information_about_Locomotive_BASIC&mobileaction=toggle_view_desktop#Passing_parameters_to_a_RSX_.28Resident_System_Extension.29_command_or_binary_function
 
+### TODOs
 |REFNUM,@CHARTRING$,INDEXNUM,@REFNUM
-
-RSX return value???
+RSX with parameters.
+Can RSX return value???
 
 ### References
 For a more detailed information and to know all the insights check the following references.
@@ -696,7 +698,7 @@ For a more detailed information and to know all the insights check the following
 
 And after doing our first RSX it is time to go for ROMs. In particular we will explore Foreground Roms that contain one or more programs. The on-board BASIC is the default foreground program.
 
-The structuture is similar to an RSX but we will need an initalization routine. Upper ROM are located at C000.
+The structture is similar to an RSX but we will need an initalization routine. Upper ROM are located at C000.
 
 The first four bytes will be the following:
 - ROM type: 0 for foreground, 1 for background, 2 for extension (onboard ROM is type &80)
@@ -795,11 +797,30 @@ If all was ok we will see the sentence Hello World from ROM! before the Ready me
 
 If we want to check what is doing we can go to WinAPE Debugger and select Memory->Any Rom->UpperROM and select slot 5.
 
-### Model ROM
-At this moment you may be tired of the Hello World example. While it is a good example to start learning I feel it is moment for including more advanced things. So let's add model check capability to our ROM
-I will borrow again some code from Amstrad diagnostics, in particular the the model detection function can be found on (https://github.com/llopis/amstrad-diagnostics/blob/main/src/Model.asm) 
+BASIC is the default foreground program (http://cpctech.cpc-live.com/docs/basic.asm) and has a header for a foreground ROM, not a real jumptable but the boot function and only command name |BASIC, try it.
 
-The language detection is done by analizing the good old known boot message that for and English CPC 6128 is *Amstrad 128K Microcomputer (v3)*, being **v** for version in English ROM, **s** for Spanish and **f** for French. The model can be detected by checking the digit next to the language letter and is expeected to be **1** for our lovely colored-keys CPC 464, **2** for 664 and **3** for CPC6128.
+```asm
+; Disassembly of Locomotive BASIC v1.1
+; 
+
+defb &80		;; foreground rom
+defb &01
+defb &02
+defb &00
+
+defw &c040		;; name table
+
+;BOOT_FUNCTION
+
+c040
+defb "BASI","C"+&80			;; |BASIC
+```
+
+### Model ROM
+At this moment you may be tired of the Hello World example. While it is a good example to start learning I feel it is moment for including more advanced things. So let's add model detection capability to our ROM.
+I will borrow again some code from Amstrad diagnostics, in particular the model detection function can be found on (https://github.com/llopis/amstrad-diagnostics/blob/main/src/Model.asm) and some other utilities.
+
+The language detection is done by analizing the good old known boot message that for an English CPC6128 is *Amstrad 128K Microcomputer (v3)*, being **v** for English ROM, **s** for Spanish and **f** for French. The model can be detected by checking the digit next to the language letter and it is expected to be **1** for our lovely coloured-keys CPC464, **2** for CPC664 and **3** for CPC6128.
 
 Other differences in ROMs are found at byte &0006. CPC6128 has &0591, CPC 664 &7B05 and CPC464 &0580
 
