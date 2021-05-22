@@ -6,6 +6,7 @@ This is **NOT** a tutorial on Z80 neither a full-detailed guide, it is a practic
 
 I have used Linux but on Windows you can also do it.
 I will use WinAPE http://www.winape.net/downloads.jsp running under linux with WINE (sudo apt install wine).
+**If you are using a non-english language some characters will be taken as accents by Linux and wont be correctly interpreted by WinAPE. You can use the Autotype function or add English keyboard layout to Linux and change it when writing in WinAPE**
 Also I will use iDSK tools https://github.com/cpcsdk/idsk but you can use similar tools.
 
 Binary numbers are composed of binary digits that are 0's or 1's. The conversion to decimal is done by multiplying each digit by the i-th power of two.
@@ -668,7 +669,7 @@ Ready
 See you soon!
 Ready
 ```
-RSX admit parameters and will be 2-byte numbers or strings. Byte 0 of the string will be the length and byte 1-2 the address of the string. Register A contains the number of parameters and IX the address of parameters.
+RSX allows parameters and will be 2-byte numbers or strings. Byte 0 of the string will be the length and byte 1-2 the address of the string. Register A contains the number of parameters and IX the address of parameters.
 
 In BASIC 1.0 (CPC464) parameters are passed in a variable and in BASIC 1.1 it is also possible to write them directly
 
@@ -930,7 +931,7 @@ I have condensed the gate array explanation as much as I could but if you want t
 
 
 ### Lower Rom
-Peviously we have set one ROM on C000 (Upper ROM) that can take advantage of the lower ROM calls. But image we don't need them or maybe thy are not available because system ROM is corrupted. This is done in the Amstrad Diagnostics (https://github.com/llopis/amstrad-diagnostics/) from which I am getting inspiration and recommend you to explore.
+Peviously we have set one Upper ROM on C000 that can take advantage of the lower ROM calls. But image we don't need them or maybe they are not available because system ROM is corrupted. This is done in the Amstrad Diagnostics (https://github.com/llopis/amstrad-diagnostics/) from which I am getting inspiration and recommend you to explore it.
 
 A Lower ROM will be similar to our Upper ROM but it will start at 0 and we will have to supply a minimal boot that sets RST vectors, CRTC (see https://github.com/llopis/amstrad-diagnostics/blob/main/src/HardwareInit.asm)
 
@@ -951,7 +952,7 @@ https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interfac
 - 
 
 ## Interface cards
-
+IN OUT
 
 Let's see how would it be the code
 
