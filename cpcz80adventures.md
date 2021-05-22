@@ -855,27 +855,34 @@ defb "Isp",0
 So we have located all the memory positions we need to explore but this time we want to read ROM instead of RAM, interesting and for that we will access the Gate Array at address &7F00. The Gate Array is a special chip that manages screen, interrupt and memory which is our now interest. Bits 7-5 select the register and bits 4-0 set the value. In this occasion we will set bits 7-6 to 10 (Register 2) that controls ROM configuration and screen mode with negated bit 3 to enable Upper ROM, negated bit 2 to enable Lower ROM and bits 2-1 for mode. 
 So we just write, setting register 2 with Lower Rom enabled and mode 1 is done by 10001001.
 
-I have condensed the explanation as much as I could but if you want to fully discover the Gate-Array
-
-TODO: explain memory paging
-http://wilco2009.blogspot.com/2015/
-https://www.cpcwiki.eu/index.php/Gate_Array
-http://www.cpcwiki.eu/imgs/c/cc/S968ap11.pdf
-
+We said a long time ago that registers come in pairs, B and C are part of BC. It is worth to mention that IN(C),r and OUT (C),r instructions use the 8 top bits (say B) for I/O address and the 8 bottom bits (say C) as value. Thus in the example below we load the value #7F00 | %10001001 or #7F89 into BC and the write in the gate array with OUT (C),C. (Remember this, because we will use it later.)
 
 ```asm
+;  Code from amstrad diagnotics
+
 ;; IN  - Address to read
 ;; OUT - HL: Contents of address
 @ReadFromLowerROM:
-	ld 	bc, #7F00 | %10001001                        ; GA select lower rom, and mode 1
-	out 	(c),c
+	ld 	bc, #7F00 | %10001001                  ; GA select lower rom, and mode 1
+	out 	(c),c                                  ; 8 top bits (B) for address, 
 	ld	l, (ix)
 	ld	h, (ix+1)
 	ld 	bc, RESTORE_ROM_CONFIG
 	out 	(c),c
 	ret
 	DEFINE RESTORE_ROM_CONFIG #7F00 + %10001001
-```	
+```
+
+Ok, this is getting longer than expected but we are not the noobs we were at the beginning of this document and we reached till here in order to select a Lower ROM and read info about brand, model and language.
+
+
+
+I have condensed the gate array explanation as much as I could but if you want to fully discover the Gate-Array take a look at the following references:
+
+- https://www.cpcwiki.eu/index.php/Gate_Array
+- https://archive.org/details/SOFT968TheAmstrad6128FirmwareManual
+- Soft968, Appendix XI, The Alternate Register Set http://www.cpcwiki.eu/imgs/c/cc/S968ap11.pdf
+
 
 ### Lower Rom
 Peviously we have set one ROM on C000 (Upper ROM) that can take advantage of the lower ROM calls. But image we don't need them or maybe thy are not available because system ROM is corrupted. This is done in the Amstrad Diagnostics (https://github.com/llopis/amstrad-diagnostics/) from which I am getting inspiration and recommend you to explore.
