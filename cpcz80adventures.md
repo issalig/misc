@@ -811,7 +811,12 @@ defb &1f,&01,&07
 defb 0
 
 ```
-In order to read the contents of the lower ROM instead of RAM we will use the following function
+In order to read the contents of the lower ROM instead of RAM we will use the following function that sets the gate array at address &7F00.
+bits7-5 is the register bit4-0 is the value. So we will set register 100 (RMR) that controls lower/upper ROM paging with value 01001.
+
+
+TODO: explain memory paging
+http://wilco2009.blogspot.com/2015/
 
 ```asm
 ;; IN  - Address to read
