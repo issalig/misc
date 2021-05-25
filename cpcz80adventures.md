@@ -901,6 +901,10 @@ So we just write, setting register 2 with Lower Rom enabled and mode 1 is done b
 
 We said a long time ago that registers come in pairs, B and C are part of BC. It is worth to mention that IN(C),r and OUT (C),r instructions use the 8 top bits (say B) for I/O address and the 8 bottom bits (say C) as value. Thus in the example below we load the value #7F00 | %10001001 or #7F89 into BC and the write in the gate array with OUT (C),C. (Remember this, because we will use it later.)
 
+
+IN instruction is similar, and for example IN a,(c) will get top half (register B) and it will ignore bottom half. 
+**TODO REVIEW ACCORDIG THIS LINK. I THINK I INVENTED SOME EXPLANATION :)** https://wiki.speccy.org/cursos/ensamblador/lenguaje_5#in-y-out
+
 It is also the first time here we deal with IX register and we will make use of their pointer facilities to load 2 bytes into HL starting at IX address.
 
 ```asm
