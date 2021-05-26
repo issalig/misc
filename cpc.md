@@ -23,8 +23,14 @@ So, to give an example, if you made a device that would ignore all IN or OUT com
  - Search M! IORW
    - http://retrowiki.es/search.php?keywords=M1+IORQ+CPC
 
+ - ESP8266 for retrocomputers
+   - http://retrowiki.es/viewtopic.php?f=83&t=200032578
+
  - Load games fom .sna with Minibooster 
    - http://fremos.cheesetea.com/2015/08/22/bluetooth-en-amstrad-cpc_cargando-juego-desde-pc/
+
+- Serial port CPC
+  - http://retrowiki.es/viewtopic.php?f=83&t=200032631&p=200076275&hilit=M1+IORQ+CPC#p200076275
 
 - https://www.va-de-retro.com/foros/viewtopic.php?t=3840
   - SERIAL CARD!!!!!!!!!!!!!!!!!!!! CHECK IT
