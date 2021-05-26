@@ -429,40 +429,18 @@ And what about running the BASIC program from asm? Well, we will do this later.
 
 
 ### asm from BASIC
-Another way to mix BASIC and asm is to embed machine code into BASIC. We will make use of CALL, PEEK, POKE
-Machine code is entered by DATA statements and a READ loop will POKE these values into memory.
-
-
-Machine_code_routines_for_your_AMSTRAD(Clive_GIFFORD_Scott_VINCENT_autographed)(acme).pdf
-Machine_Code_for_Beginners_on_the_AMSTRAD(Steve_KRAMER)(acme).pdf ++
-Assembly_language_programming_for_the_AMSTRAD_CPC464-664-6128(AP-DJ_STEPHENSON)(acme).pdf  +++
-
-
-
-```basic
-1Θ SYMBOL AFTER 256:MEMORY 39999:SYMBOL AFTER 240
-20 FOR n=40000 TO 40071
-30 READ a$:POKE n,VAL("&"+a$)
-40 NEXT 
-50 DATA B7,C5,DD,6E,00,2D,26,27,CD,1A
-60 DATA BC,23,0E,07,C5,E5,CB,3E,06,4F
-70 DATA 5D,54,7D,2D,B7,20,0A,7C,25,E6
-80 DATA 07,20,04,7C,C6,08,67,1A,CB,3E
-90 DATA 38,04,CB,9F,18,02,CB,DF,CB,5E
-100 DATA 28,02,CB,FF,12,10,DB,CB,9E,E1
-110 DATA 0D,20,D0,7C,C6,08,67,C1,0D,20
-120 DATA C7,C9
-```
+Another way to mix BASIC and asm is to embed machine code into BASIC.
+Machine code is entered by DATA statements and a READ loop will POKE these values into memory. Then CALL at the required address and you are done.
 
 Go back to our Hello world program and get code bytes
 
 ```basic
 10 REM LOAD ASM into BASIC
-30 NUMBER=30
-40 ADDRESS%=&1200
-50 FOR N%=O TO number%-1
-60 READ BYTE$
-70 POKE ADDRESS%+N%,VAL("&"+BYTE$)
+30 size=30
+40 address%=&1200
+50 FOR n%=O TO size%-1
+60 READ a$
+70 POKE address%+n%,VAL("&"+a$)
 80 NEXT
 90 END
 120 REM HELLO WORLD Z80
@@ -472,25 +450,15 @@ Go back to our Hello world program and get code bytes
 130 DATA 6F,72,6C,64,21,00
 ```
 
-We could get rid of VAL("&"+BYTES) and just use a number if we have data already converted to decimal.
+We could get rid of VAL("&"+a$) and just use a number if we have data already converted to decimal.
 
+Entering data manually is a PITA and prone to error. For that reason we can make use of tools **TODO cite tool**
 
-In particular analysing GENA3.1 assembler
-asks for address
+### References
+- https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/VIRGIN/Machine_code_routines_for_your_AMSTRAD(Clive_GIFFORD_Scott_VINCENT_autographed)(acme).pdf
+- https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/MICRO_PRESS/Machine_Code_for_Beginners_on_the_AMSTRAD(Steve_KRAMER)(acme).pdf
+- https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/ARGUS_BOOK/Assembly_language_programming_for_the_AMSTRAD_CPC464-664-6128(AP-DJ_STEPHENSON)(acme).pdf
 
-```basic
-10 MODE 1
-20 CLS:PRINT "   AMSOFT PRESENTS"
-30 PRINT "   HISOFT   DEVPAC"
-40 PRINT"GENA3.1 Assembler Loader":PRINT" Copyright Hisoft 1984":PRINT:PRINT"Load address";
-50 INPUT m:OPENOUT"d":h=HIMEM:PRINT "Load MONA now";:INPUT b$
-60 b$=LEFT$(b$,1): t=(b$="y")OR ( b$="Y"):IF t THEN PRINT"Load Address for MONA";:INPUT g
-70 IF M<G OR g=0 THEN MEMORY M-1 ELSE MEMORY G-1
-80 CLOSEOUT:PRINT"..loading GENA3.1":LOAD "!GENA31.BIN",M
-90 IF NOT t THEN 130
-120 PRINT "..loading MONA3.1":LOAD"!MONA31.BIN",G
-130 CALL &BC65:CALL m,g,m,h:STOP
-```
 
 ## Jumpblock
 
