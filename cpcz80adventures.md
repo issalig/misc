@@ -1342,6 +1342,15 @@ FBXX|Expansion Bus|Expansion Bus
 FCXX to FEXX|Do not use|Do not use
 FFXX|Not used|Not used
 
+The arrangement of I/O addresses, summarised in the table given here, appears even more complex than the memory map, but the hardware decoding is relatively simple.
+- If address bit A15 is low, the Video Gate Array is selected.
+- If address bit A14 is low, the CRT Controller is selected.
+- If address bit A13 is low, the expansion ROM number must be set.
+- If address bit A12 is low, the printer latch is selected.
+- If address bit A11 is low, the PPI isselected.
+- If address bit A10 is low, an expansion channel is implied.
+Not more than one of bits A10 to A15 may be low in a given address, which accounts for the large number of ‘donotuse’ restrictions. It is especially important that this rule is observed for inputs, since physical damage could otherwise occur. In the case of the CRT Controller and the PPI, bits A8 and A9 select a particular function of the device
+
 
 ## Analysis of Roms
 - Amstrad diag
