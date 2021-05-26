@@ -19,18 +19,24 @@ For hexadecimal numbers I will use &,#,$,h indistinctively or any other symbol n
 
 These are some of resources I used to on my way to write this.
 - CPCWiki, a helpful community https://www.cpcwiki.eu/forum/programming/
+- ACPC.me, full of documentation, books, etc, ... https://acpc.me
 - Locomotive BASIC https://www.cpcwiki.eu/index.php/Locomotive_BASIC
 - For a good Z80 tutorial you can visit https://www.chibiakumas.com/z80/index.php
 - Z80 Assembly programming for the Amstrad CPC https://www.chibiakumas.com/z80/AmstradCPC.php
 - Soft968 (incomplete) https://www.cpcwiki.eu/index.php/Soft968:_CPC_464/664/6128_Firmware
 - Soft968 (full) https://archive.org/details/SOFT968TheAmstrad6128FirmwareManual
 - Firmware guide http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
+- Amstrad CPC464 Whole Memory Guide https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/AMSTRAD_CPC464_whole_memory_guide(Don_THOMSON)(acme).pdf
+- The Ins and Outs of the Amstrad CPC 464 https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/MELBOURNE_HOUSE/The_Ins_and_Outs_of_the_AMSTRAD_CPC464(Don_THOMSON)(acme).pdf
+- Assembly_language_programming_for_the_AMSTRAD_CPC464-664-6128 https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/ARGUS_BOOK/Assembly_language_programming_for_the_AMSTRAD_CPC464-664-6128(AP-DJ_STEPHENSON)(acme).pdf
+- The Bible, Programming the Z80 https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/SYBEX/Programming_the_Z80(Rodnay_ZAKS_1982_Edition3Revised)[OCR].pdf
 - A nice page with clearly explained Z80 instructions http://www.z80.info/z80code.htm
 - Locomotive basic 1.1 disassembly http://www.cpctech.org.uk/docs/basic.asm
 - CPC6128 operating system ROM http://www.cpctech.org.uk/docs/os.asm
 - Z80 timings https://wiki.octoate.de/lib/exe/fetch.php/amstradcpc:z80_cpc_timings_cheat_sheet.20131019.pdf
 - Markdown cheatsheet https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 - and many others ...
+
 
 ## Index
 
@@ -371,7 +377,7 @@ We have already used memory address &1200 which is in the area of BASIC (0170-HI
 ## Mixing asm and BASIC
 [Up](#CPC-Basic-and-Z80-adventures) [Previous](#Assembly) [Next](#Jumpblock)
 
-
+### BASIC from asm
 
 Now we know a little bit of assembly and we have also seen how a BASIC code is stored in memory.
 
@@ -419,6 +425,72 @@ Ready
 ```
 
 And what about running the BASIC program from asm? Well, we will do this later.
+
+
+
+### asm from BASIC
+Another way to mix BASIC and asm is to embed machine code into BASIC. We will make use of CALL, PEEK, POKE
+Machine code is entered by DATA statements and a READ loop will POKE these values into memory.
+
+
+Machine_code_routines_for_your_AMSTRAD(Clive_GIFFORD_Scott_VINCENT_autographed)(acme).pdf
+Machine_Code_for_Beginners_on_the_AMSTRAD(Steve_KRAMER)(acme).pdf ++
+Assembly_language_programming_for_the_AMSTRAD_CPC464-664-6128(AP-DJ_STEPHENSON)(acme).pdf  +++
+
+
+
+```basic
+1Θ SYMBOL AFTER 256:MEMORY 39999:SYMBOL AFTER 240
+20 FOR n=40000 TO 40071
+30 READ a$:POKE n,VAL("&"+a$)
+40 NEXT 
+50 DATA B7,C5,DD,6E,00,2D,26,27,CD,1A
+60 DATA BC,23,0E,07,C5,E5,CB,3E,06,4F
+70 DATA 5D,54,7D,2D,B7,20,0A,7C,25,E6
+80 DATA 07,20,04,7C,C6,08,67,1A,CB,3E
+90 DATA 38,04,CB,9F,18,02,CB,DF,CB,5E
+100 DATA 28,02,CB,FF,12,10,DB,CB,9E,E1
+110 DATA 0D,20,D0,7C,C6,08,67,C1,0D,20
+120 DATA C7,C9
+```
+
+Go back to our Hello world program and get code bytes
+
+```basic
+10 REM LOAD ASM into BASIC
+30 NUMBER=30
+40 ADDRESS%=&1200
+50 FOR N%=O TO number%-1
+60 READ BYTE$
+70 POKE ADDRESS%+N%,VAL("&"+BYTE$)
+80 NEXT
+90 END
+120 REM HELLO WORLD Z80
+100 DATA 21,11,12,CD,07,12,C9,7E
+110 DATA FE,00,C8,23,CD,5A,BB,18
+120 DATA F6,48,65,6C,6C,6F,20,57
+130 DATA 6F,72,6C,64,21,00
+```
+
+We could get rid of VAL("&"+BYTES) and just use a number if we have data already converted to decimal.
+
+
+In particular analysing GENA3.1 assembler
+asks for address
+
+```basic
+10 MODE 1
+20 CLS:PRINT "   AMSOFT PRESENTS"
+30 PRINT "   HISOFT   DEVPAC"
+40 PRINT"GENA3.1 Assembler Loader":PRINT" Copyright Hisoft 1984":PRINT:PRINT"Load address";
+50 INPUT m:OPENOUT"d":h=HIMEM:PRINT "Load MONA now";:INPUT b$
+60 b$=LEFT$(b$,1): t=(b$="y")OR ( b$="Y"):IF t THEN PRINT"Load Address for MONA";:INPUT g
+70 IF M<G OR g=0 THEN MEMORY M-1 ELSE MEMORY G-1
+80 CLOSEOUT:PRINT"..loading GENA3.1":LOAD "!GENA31.BIN",M
+90 IF NOT t THEN 130
+120 PRINT "..loading MONA3.1":LOAD"!MONA31.BIN",G
+130 CALL &BC65:CALL m,g,m,h:STOP
+```
 
 ## Jumpblock
 
