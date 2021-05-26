@@ -40,7 +40,7 @@ These are some of resources I used to on my way to write this.
 
 ## Index
 
-[BASIC](#BASIC)
+[BASIC](#BASIC-internals)
 
 [Assembly](#Assembly)
 
@@ -54,10 +54,11 @@ These are some of resources I used to on my way to write this.
 
 [TODOs](#TODOs)
 
-## BASIC 
+## BASIC internals
 [Up](#CPC-Basic-and-Z80-adventures) [Previous](#Index) [Next](#Assembly)
 
 Now let's start and go back to your good old BASIC days and type the following code on WinAPE. If you are new to CPC world, welcome aboard!
+It is worth to mention that this is not a BASIC tutorial but BASIC internal decoding and file structure.
 
 ```basic
 10 REM Hello
@@ -150,7 +151,7 @@ bf                             ; bf is PRINT code
 
 
 ## Assembly
-[Up](#CPC-Basic-and-Z80-adventures) [Previous](#BASIC) [Next](#Mixing-asm-and-BASIC)
+[Up](#CPC-Basic-and-Z80-adventures) [Previous](#BASIC-internals) [Next](#Mixing-asm-and-BASIC)
 
 
 And now that we know some things about BASIC, and even we got down to the internal representation of a BASIC program, we are gonna play like the BIG boys, we are gonna play with **Z80 assembly**.
