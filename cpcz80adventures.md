@@ -40,7 +40,7 @@ These are some of resources I used to on my way to write this.
 
 ## Index
 
-[BASIC](#BASIC-internals)
+[BASIC internals](#BASIC-internals)
 
 [Assembly](#Assembly)
 
@@ -1399,6 +1399,11 @@ Not more than one of bits A10 to A15 may be low in a given address, which accoun
 
 ## Interface cards
 IN OUT
+Clocks
+https://bmpc.github.io/2021/03/14/interface-with-amstrad-cpc6128-using-a-microcontroller.html
+
+## 
+
 
 Let's see how would it be the code
 
