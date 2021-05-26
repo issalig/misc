@@ -1315,6 +1315,34 @@ https://www.cpcwiki.eu/forum/amstrad-cpc-hardware/very-simple-expansion-interfac
 
 # DRAFT AREA
 
+## Inner peripherals
+
+Address|Output|Input
+-|-|-
+00XX to 7EXX|Do not use|Do not use
+7FXX|Video Gate Array|Do not use
+80XX to BBXX|Do not use|Do not use
+BCXX|CRTC Register Select|Do not use
+BDXX|CRTC Data|Do not use
+BEXX|Do not use|Reserved(CRTC Status)
+BFXX|Do not use|CRTC Data
+C0XX to DEXX|Donotuse|Do not use
+DFXX|Expansion ROM Select|Do not use
+E0XX to EEXX|Donotuse|Donotuse
+EFXX|PrinterLatch|Donotuse
+F0XX to F3XX|Do not use|Do not use
+F4XX|PPI PortA Data|PPI PortA Data
+F5XX|PPI PortB Data|PPI PortB Data
+F6XX|PPI PortC Data|PPI PortC Data
+F7XX|PPI Control|Undefined
+F8XX|Expansion Bus|Expansion Bus
+F9XX|Expansion Bus|Expansion Bus
+FAXX|Expansion Bus|Expansion Bus
+FBXX|Expansion Bus|Expansion Bus
+FCXX to FEXX|Do not use|Do not use
+FFXX|Not used|Not used
+
+
 ## Analysis of Roms
 - Amstrad diag
 - 
