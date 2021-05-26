@@ -694,7 +694,7 @@ For a more detailed information and to know all the insights check the following
 [EXA] RSX example https://www.cpcwiki.eu/index.php/Programming:An_example_to_define_a_RSX
 [ANA] RSX Anatomy https://cpcrulez.fr/coding_RSX-anatomy_of_an_RSX-part_1_AA.htm
 
-## ROMs
+## ROM
 [Up](#Index) [Previous](#RSX)
 
 And after doing our first RSX it is time to go for ROMs. In particular we will explore Foreground Roms that contain one or more programs. The on-board BASIC is the default foreground program.
@@ -817,7 +817,7 @@ c040
 defb "BASI","C"+&80			;; |BASIC
 ```
 
-### Model ROM
+### Model detection ROM
 At this moment you may be tired of the Hello World example. While it is a good example to start learning I feel it is moment for including more advanced things. So let's add model detection capability to our ROM.
 I will borrow again some code from Amstrad diagnostics, in particular the model detection function can be found on (https://github.com/llopis/amstrad-diagnostics/blob/main/src/Model.asm) and some other utilities.
 
@@ -897,13 +897,26 @@ defb "Isp",0
 ```
 
 So we have located all the memory positions we need to explore but this time we want to read ROM instead of RAM, interesting and for that we will access the Gate Array at address &7F00. The Gate Array is a special chip that manages screen, interrupt and memory which is our now interest. Bits 7-5 select the register and bits 4-0 set the value. In this occasion we will set bits 7-6 to 10 (Register 2) that controls ROM configuration and screen mode with negated bit 3 to enable Upper ROM, negated bit 2 to enable Lower ROM and bits 2-1 for mode. 
-So we just write, setting register 2 with Lower Rom enabled and mode 1 is done by 10001001.
+So we just have to set register 2 with Lower Rom enabled and mode 1 with the following value 10001001.
 
-We said a long time ago that registers come in pairs, B and C are part of BC. It is worth to mention that IN(C),r and OUT (C),r instructions use the 8 top bits (say B) for I/O address and the 8 bottom bits (say C) as value. Thus in the example below we load the value #7F00 | %10001001 or #7F89 into BC and the write in the gate array with OUT (C),C. (Remember this, because we will use it later.)
+IN, OUT instructions are used to communicate to other systems. In the following example, first we set register BC to  &7F00 | %10001001 or #7F89 being the high byte B=#7F and C=#89
+We will use OUT (C),r that places r in the address stored **BC** (Yes, I got a funny time until I discovered in this case (C) means (BC) :) ). In the following case OUT (C),C sets the configuration byte which is C into the address of **BC** even that the mnemonic is (c).
+
+It also happens that the low byte is ignored for addressing, this &7FXX will select the gate array
+From https://www.cpcwiki.eu/index.php/Gate_Array we see that The gate array is selected when bit 15 of the I/O port address is set to "0" and bit 14 of the I/O port address is set to "1". The values of the other bits are ignored. However, to avoid conflict with other devices in the system, these bits should be set to "1". 
 
 
-IN instruction is similar, and for example IN a,(c) will get top half (register B) and it will ignore bottom half. 
-**TODO REVIEW ACCORDIG THIS LINK. I THINK I INVENTED SOME EXPLANATION :)** https://wiki.speccy.org/cursos/ensamblador/lenguaje_5#in-y-out
+```asm
+ld 	bc, &7F00 | %10001001                  ; GA select lower rom, and mode 1
+out 	(c),c                                  ; 8 top bits (B) for address, 
+```
+Similarly, IN r,(C) gets data from address BC. The following code reads PPI Port B register at address &F5XX by first setting the high byte &F5 of the address to B (the low byte XX is IGNORED) and gets a value from BC address into A.
+
+```asm
+ ld      b,&f5			;; PPI port B input
+ in      a,(c)
+```
+
 
 It is also the first time here we deal with IX register and we will make use of their pointer facilities to load 2 bytes into HL starting at IX address.
 
