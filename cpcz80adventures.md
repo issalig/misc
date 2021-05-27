@@ -254,11 +254,9 @@ message:
         defb    "Hello World!",0 ; String is ended with 0 and prinString will stop on 0
 ```
 
-**TODO** fix bytecode for cp 0, there was a mistake with cp a
-
 It is always safe to put defb after code (especially ret or jump), so this data will not be executed.
 
-We can also use "or a" instead of "cp 0" which is faster faster we are not in a hurry this time. But remember, first make it work, then make it fast and beware of the optimisation bugs included.
+We can also use "or a" instead of "cp 0" which is faster, but we are not in a hurry this time. But remember, first make it work, then make it fast and beware of the optimisation bugs included.
 
 Once you have taken a look to the asm code, let's put it into WinAPE (Assembler->Show assembler), copypaste it and then assemble it (Ctrl+F9). If all was correct it should give 0 errors.
 
@@ -301,7 +299,7 @@ If everything was fine, now you are seeing "Hello world!" on the screen.
 Now save as a binary file starting at &1200 and size &1D (29).
 save "hello.bin",b,&1200,&1D
 
-But an easier wat is to tell the assembler to write it for us. Then, we can add it to a dsk file with WinAPE or iDSK.
+But an easier way is to tell the assembler to write it for us. Then, we can add it to a dsk file with WinAPE or iDSK.
 
 ```asm
 write "hello.bin"
@@ -336,7 +334,7 @@ Taille du fichier : 29
 121B 21 00 1A       LD HL,1A00
 
 ```
-iDSK can also show and hexadecimal view of the file that can be also pasted on  https://onlinedisassembler.com
+iDSK can also show and hexadecimal view of the file.
 
 ```
 iDSK hello.dsk -h hello.bin
@@ -344,6 +342,13 @@ DSK : hello.dsk
 Amsdos file : hello.bin
 #0000 21 10 12 CD 07 12 C9 7E BF C8 23 CD 5A BB 18 F7 | !.........#.Z...
 #0010 48 65 6C 6C 6F 20 57 6F 72 6C 64 21 00 1A 00 00 | Hello.World!....
+```
+
+bin2txt.py script can also extract hex values that can be pasted on  https://onlinedisassembler.com
+```
+python bin2txt.py --file  hello.bin --totxt  --hex --hexprefix="" --sep=" " --linesize 16 --printout --out hello_bin.txt
+21 11 12 cd 07 12 c9 7e fe 00 c8 23 cd 5a bb 18
+f6 48 65 6c 6c 6f 20 57 6f 72 6c 64 21 00
 ```
 
 Ok, we saved the file, switch off the computer, but next day we want to load it.
@@ -405,14 +410,25 @@ main:
         ret                                     ; do not forget to go back from call
 	
 basic_code:
-defb &0c,&00,&0a,&00,&c5,&20,&48,&65,&6c,&6c,&6f,&00,&15,&00,&14,&00,&bf
-defb &20,&22,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&22,&00,&00,&00 
+defb  &0c,&00,&0a,&00,&c5,&20,&48,&65,&6c,&6c,&6f,&00,&15,&00,&14,&00
+defb  &bf,&20,&22,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&22
+defb  &00,&00,&00
 ```
 
-Basic code can be get by using the following command:
+Basic code can be easily extracted using bin2txt:
 ```
-python bin2txt.py --file  HELLO.BAS --totxt --prefix defb --hex --linesize 16 --printout
-
+python bin2txt.py --file  HELLO.BAS --totxt  --prefix defb --hex --linesize 16 --printout  
+Name:  HELLO   BAS
+User:  0
+Type:  0 (BASIC)
+Length:  35 / 0x23 bytes
+Logical length  35 / 0x23 bytes
+Entry address  0 / 0x0
+Load address:  368 / 0x170
+Checksum:  0x361
+defb  &0c,&00,&0a,&00,&c5,&20,&48,&65,&6c,&6c,&6f,&00,&15,&00,&14,&00
+defb  &bf,&20,&22,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&22
+defb  &00,&00,&00
 ```
 
 Now compile it, execute it with CALL, type LIST command and our Hello World! code will appear. Of course you can also RUN it.
@@ -439,59 +455,39 @@ And what about running the BASIC program from asm? Well, we will do this later.
 Another way to mix BASIC and asm is to embed machine code into BASIC.
 Machine code is entered by DATA statements and a READ loop will POKE these values into memory. Then CALL at the required address and you are done.
 
-Go back to our Hello world program and get code bytes
+And it is possible to automagically convert your binary file into bas using the following command
+
+```
+python bin2txt.py --file  hello.bin --totxt  --prefix="DATA " --hex --hexprefix=""  --linesize 16 --printout  --basicLoader --callAddress "&1200"
+```
+
+And here is the results
 
 ```basic
-10 REM LOAD ASM into BASIC
-30 size=30
-40 address%=&1200
-50 FOR n%=O TO size%-1
-60 READ a$
-70 POKE address%+n%,VAL("&"+a$)
-80 NEXT
-90 END
-120 REM HELLO WORLD Z80
-100 DATA 21,11,12,CD,07,12,C9,7E
-110 DATA FE,00,C8,23,CD,5A,BB,18
-120 DATA F6,48,65,6C,6C,6F,20,57
-130 DATA 6F,72,6C,64,21,00
+10 REM MACHINE CODE LOADER
+20 size= 30
+30 addr= &1200
+40 FOR b=0 TO size-1: READ a$:POKE addr+b,VAL("&"+a$):NEXT
+50 CALL  &1200
+60 DATA   21,11,12,cd,07,12,c9,7e,fe,00,c8,23,cd,5a,bb,18
+70 DATA   f6,48,65,6c,6c,6f,20,57,6f,72,6c,64,21,00
 ```
 
-We could get rid of VAL("&"+a$) and just use a number if we have data already converted to decimal.
-
-This will set the graphics paper colour, i.e. the colour that the screen clears to when a CLG command is issued. The following short routine, which can be located anywhere in memory to fit around other routines, will emulate this. After it has been run, the graphics pen can be changed to colour i by issuing a CALL 40000,i (changing the 40000 for whatever address you relocate it to where necessary).
-
-```basic
-10 DATA dd,7e,00,c3,e4,bb
-20 addr=40000
-30 FOR g=0 TO 5:READ a$:POKE addr+g,VAL("&"+a$):NEXT
-```
-
-Entering data manually is a PITA and prone to error. For that reason I have developed a Python script
-
-To get a binary file and use it in BASIC
+And of course you can use it without the loader
 
 ```
-python bin2txt.py --file  hello.bin --totxt --hex --prefix DATA --linesize 16 --printout 
+python bin2txt.py --file  hello.bin --totxt --hex --hexprefix="&" --prefix DATA --linesize 16 --printout 
 DATA  &21,&11,&12,&cd,&07,&12,&c9,&7e,&fe,&00,&c8,&23,&cd,&5a,&bb,&18
 DATA  &f6,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&00
 ```
 
-Values as integers 
+We could get rid of VAL("&"+a$) and just use a number if we have data already converted to decimal.
 
 ```
 python bin2txt.py --file  hello.bin --totxt  --prefix DATA --linesize 16 --printout 
 DATA   33, 17, 18,205,  7, 18,201,126,254,  0,200, 35,205, 90,187, 24
 DATA  246, 72,101,108,108,111, 32, 87,111,114,108,100, 33,  0
 ```
-
-To use it in asm
-```
-python bin2txt.py --file  hello.bin --totxt --hex --hexprefix "#" --prefix defb --linesize 16 --printout 
-defb  #21,#11,#12,#cd,#07,#12,#c9,#7e,#fe,#00,#c8,#23,#cd,#5a,#bb,#18
-defb  #f6,#48,#65,#6c,#6c,#6f,#20,#57,#6f,#72,#6c,#64,#21,#00
-```
-
 
 ### References
 - https://www.sean.co.uk/books/amstrad/amstrad7.shtm
