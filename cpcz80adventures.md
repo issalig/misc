@@ -409,6 +409,12 @@ defb &0c,&00,&0a,&00,&c5,&20,&48,&65,&6c,&6c,&6f,&00,&15,&00,&14,&00,&bf
 defb &20,&22,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&22,&00,&00,&00 
 ```
 
+Basic code can be get by using the following command:
+```
+python bin2txt.py --file  HELLO.BAS --totxt --prefix defb --hex --linesize 16 --printout
+
+```
+
 Now compile it, execute it with CALL, type LIST command and our Hello World! code will appear. Of course you can also RUN it.
 
 ```
@@ -453,9 +459,42 @@ Go back to our Hello world program and get code bytes
 
 We could get rid of VAL("&"+a$) and just use a number if we have data already converted to decimal.
 
-Entering data manually is a PITA and prone to error. For that reason we can make use of tools **TODO cite tool**
+This will set the graphics paper colour, i.e. the colour that the screen clears to when a CLG command is issued. The following short routine, which can be located anywhere in memory to fit around other routines, will emulate this. After it has been run, the graphics pen can be changed to colour i by issuing a CALL 40000,i (changing the 40000 for whatever address you relocate it to where necessary).
+
+```basic
+10 DATA dd,7e,00,c3,e4,bb
+20 addr=40000
+30 FOR g=0 TO 5:READ a$:POKE addr+g,VAL("&"+a$):NEXT
+```
+
+Entering data manually is a PITA and prone to error. For that reason I have developed a Python script
+
+To get a binary file and use it in BASIC
+
+```
+python bin2txt.py --file  hello.bin --totxt --hex --prefix DATA --linesize 16 --printout 
+DATA  &21,&11,&12,&cd,&07,&12,&c9,&7e,&fe,&00,&c8,&23,&cd,&5a,&bb,&18
+DATA  &f6,&48,&65,&6c,&6c,&6f,&20,&57,&6f,&72,&6c,&64,&21,&00
+```
+
+Values as integers 
+
+```
+python bin2txt.py --file  hello.bin --totxt  --prefix DATA --linesize 16 --printout 
+DATA   33, 17, 18,205,  7, 18,201,126,254,  0,200, 35,205, 90,187, 24
+DATA  246, 72,101,108,108,111, 32, 87,111,114,108,100, 33,  0
+```
+
+To use it in asm
+```
+python bin2txt.py --file  hello.bin --totxt --hex --hexprefix "#" --prefix defb --linesize 16 --printout 
+defb  #21,#11,#12,#cd,#07,#12,#c9,#7e,#fe,#00,#c8,#23,#cd,#5a,#bb,#18
+defb  #f6,#48,#65,#6c,#6c,#6f,#20,#57,#6f,#72,#6c,#64,#21,#00
+```
+
 
 ### References
+- https://www.sean.co.uk/books/amstrad/amstrad7.shtm
 - https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/VIRGIN/Machine_code_routines_for_your_AMSTRAD(Clive_GIFFORD_Scott_VINCENT_autographed)(acme).pdf
 - https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/MICRO_PRESS/Machine_Code_for_Beginners_on_the_AMSTRAD(Steve_KRAMER)(acme).pdf
 - https://acpc.me/ACME/LITTERATURE_LIVRES/[ENG]ENGLISH/ARGUS_BOOK/Assembly_language_programming_for_the_AMSTRAD_CPC464-664-6128(AP-DJ_STEPHENSON)(acme).pdf
