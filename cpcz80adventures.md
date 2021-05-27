@@ -125,7 +125,7 @@ LIST
 
 ASCII is nice and human readable but let's dive into the .BAS file which is much more interesting (Reference on  https://cpctech.cpcwiki.de/docs/bastech.html)
 
-Again, I will use iDSK to extract the bytes
+We can use iDSK to extract the bytes
 ```
 iDSK hello.dsk -h hello.bas
 ```
@@ -147,6 +147,21 @@ bf                             ; bf is PRINT code
 00                             ; end of line marker
 00 00                          ; length of line 0 is end of basic program
 
+```
+
+Or we can also use my python tool bin2txt.py
+```
+python bin2txt.py -f HELLO.BAS --totxt --hexprefix="" --hex --printout
+Name:  HELLO   BAS
+User:  0
+Type:  0 (BASIC)
+Length:  35 / 0x23 bytes
+Logical length  35 / 0x23 bytes
+Entry address  0 / 0x0
+Load address:  368 / 0x170
+Checksum:  0x361
+0c,00,0a,00,c5,20,48,65,6c,6c,6f,00,15,00,14,00,bf,20,22,48,65,6c,6c,6f,20,57,6f,72,6c,64
+21,22,00,00,00
 ```
 
 
