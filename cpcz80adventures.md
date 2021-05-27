@@ -125,12 +125,17 @@ LIST
 
 ASCII is nice and human readable but let's dive into the .BAS file which is much more interesting (Reference on  https://cpctech.cpcwiki.de/docs/bastech.html)
 
-We can use iDSK to extract the bytes
+We can use iDSK to see the hex values
 ```
-iDSK hello.dsk -h hello.bas
+iDSK hello.dsk -h HELLO.BAS
+DSK : hello.dsk
+Amsdos file : HELLO.BAS
+#0000 0C 00 0A 00 C5 20 48 65 6C 6C 6F 00 15 00 14 00 | ......Hello.....
+#0010 BF 20 22 48 65 6C 6C 6F 20 57 6F 72 6C 64 21 22 | .."Hello.World!"
+#0020 00 00 00 1A 22 0D 0A 1A 00 00 00 00 00 00 00 00 | ...."...........
 ```
 
-This command will remove the first 128 bytes (AMSDOS headers) and we have the following bytes:
+The command above does not show the first 128 bytes (AMSDOS header) and below you have an explanation of the BASIC bytecode.
 
 ```
 0c 00                          ; length of data 12 (&0c) bytes
@@ -149,9 +154,10 @@ bf                             ; bf is PRINT code
 
 ```
 
-Or we can also use my python tool bin2txt.py
+We can also use my python tool bin2txt.py to extract the bytes to a txt file and a lot more things that we will discover soon.
+
 ```
-python bin2txt.py -f HELLO.BAS --totxt --hexprefix="" --hex --printout
+python bin2txt.py -f HELLO.BAS --totxt --hexprefix="" --hex --out out.txt --printout
 Name:  HELLO   BAS
 User:  0
 Type:  0 (BASIC)
